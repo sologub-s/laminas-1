@@ -1,0 +1,27 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: Serhii Solohub
+ * Date: 24.05.2020
+ * Time: 01:26
+ */
+
+/*
+ * Development-specific config.
+ * This is not the BASE config file. The BASE config file is config/autoload/global.php
+ * This file overrides config/application.config.php when APPLICATION_ENV === 'development'
+ * This file MUST NOT BE COMMITTED !
+ */
+
+return [
+    'db' => [
+        'hostname' => '',
+        'database' => '',
+        'username' => '',
+        'password' => '',
+    ],
+    'view_manager' => [
+        'display_exceptions' => true,
+    ],
+    'config_cache_enable' => false,
+];

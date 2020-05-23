@@ -1,0 +1,24 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: Serhii Solohub
+ * Date: 24.05.2020
+ * Time: 01:25
+ */
+
+/*
+ * Production-specific config.
+ * WARNING ! This config file is NOT overrided by other config files in that folder !
+ * This is not the BASE config file. The BASE config file is config/autoload/global.php
+ * This file overrides config/application.config.php when APPLICATION_ENV === 'production'
+ * This file MUST NOT BE COMMITTED !
+ */
+
+return [
+    'db' => [
+        'hostname' => '',
+        'database' => '',
+        'username' => '',
+        'password' => '',
+    ],
+];

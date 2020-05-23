@@ -1,0 +1,14 @@
+<?php
+use Blog\Form\PostForm;
+?>
+
+<h1>Edit blog post</h1>
+
+<?php
+/** @var PostForm $form */
+$form = $this->form;
+$form->setAttribute('action', $this->url('blog/edit', [], true));
+echo $this->partial('blog/write/form', [
+    'form' => $form,
+    'submitLabel' => 'Update post',
+]);

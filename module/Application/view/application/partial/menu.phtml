@@ -1,0 +1,7 @@
+<ul class="<?= $this->navigation()->menu()->getUlClass() ?>">
+<?php foreach ($this->container as $page): ?>
+    <li class="nav-item">
+        <a class="nav-link <?= $page->isActive(true) ? 'active' : '' ?>" href="<?= $page->getHref() ?>" title="<?= $page->getTitle() ?>" target="<?= $page->getTarget() ?>" id="<?= $page->getId() ?>"><?= $page->label ?><?php if($page->isActive(true)): ?> <span class="sr-only">(current)</span><?php endif; ?></a>
+    </li>
+<?php endforeach; ?>
+</ul>
