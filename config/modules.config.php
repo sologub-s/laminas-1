@@ -23,7 +23,9 @@ return [
     'Laminas\I18n',
     'Laminas\Router',
     'Laminas\Validator',
+    'Session',
     'Application',
     'Album',
     'Blog',
+    'Backend',
 ];

@@ -42,6 +42,8 @@ return [
         */
     ],
 
+
+
     'session_containers' => [
         Laminas\Session\Container::class,
     ],
@@ -51,5 +53,18 @@ return [
     'session_config'  => [
         //'gc_maxlifetime' => 7200, // not necessary
         // …
+    ],
+
+    'modules' => [
+        'session' => [
+            'a' => 'A',
+            'admin' => [
+                'isLogged' => false, // whether admin is logged or not
+                'loggedAt' => null, // when the login happened
+            ],
+        ],
+        'backend' => [
+            'adminPassword' => '12345',
+        ],
     ],
 ];

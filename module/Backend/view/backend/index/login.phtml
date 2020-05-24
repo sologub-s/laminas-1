@@ -1,0 +1,42 @@
+<?php
+use Backend\Form\LoginForm;
+?>
+
+<h1>Login</h1>
+
+<?php if ($this->errorMessage !== ''): ?>
+    <div class="alert alert-danger" role="alert">
+        <?= $this->errorMessage ?>
+    </div>
+<?php endif; ?>
+
+<?php
+/** @var LoginForm $form */
+
+$form = $this->form;
+
+$form->setAttribute('action', $this->url());
+
+$password = $form->get('password');
+$password->setAttribute('class', 'form-control');
+$password->setAttribute('placeholder', 'Password');
+
+$submit = $form->get('submit');
+$submit->setAttribute('class', 'btn btn-primary');
+
+$form->prepare();
+
+echo $this->form()->openTag($form);
+?>
+
+<fieldset>
+    <div class="form-group">
+        <?= $this->formLabel($password) ?>
+        <?= $this->formElement($password) ?>
+        <?= $this->formElementErrors()->render($password, ['class' => 'help-block']) ?>
+    </div>
+</fieldset>
+
+<?php
+echo $this->formSubmit($submit);
+echo $this->form()->closeTag();
