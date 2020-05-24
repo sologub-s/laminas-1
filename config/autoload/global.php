@@ -14,6 +14,8 @@
 
 // best place for some kinds of custom configs
 
+use Laminas\Session;
+
 return [
     'db' => [
         'driver' => 'Pdo_Mysql',
@@ -38,5 +40,16 @@ return [
             PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci'
         ],
         */
+    ],
+
+    'session_containers' => [
+        Laminas\Session\Container::class,
+    ],
+    'session_storage' => [
+        'type' => Laminas\Session\Storage\SessionArrayStorage::class,
+    ],
+    'session_config'  => [
+        //'gc_maxlifetime' => 7200, // not necessary
+        // …
     ],
 ];

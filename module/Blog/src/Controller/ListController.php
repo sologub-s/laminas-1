@@ -9,10 +9,12 @@
 namespace Blog\Controller;
 
 use Blog\Model\PostRepositoryInterface;
+use Interop\Container\ContainerInterface;
 use Laminas\Db\Adapter\AdapterInterface;
 use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\View\Model\ViewModel;
 use InvalidArgumentException;
+use Laminas\Session\Container as SessionContainer;
 
 class ListController extends AbstractActionController
 {
@@ -21,13 +23,30 @@ class ListController extends AbstractActionController
      */
     private $postRepository;
 
-    public function __construct(PostRepositoryInterface $postRepository/*, $dbAdapter*/)
+    /**
+     * @var SessionContainer
+     */
+    private $sessionContainer;
+
+    /**
+     * @var ContainerInterface
+     */
+    private $container;
+
+    public function __construct(PostRepositoryInterface $postRepository/*, $dbAdapter*/, SessionContainer $sessionContainer, ContainerInterface $container)
     {
         $this->postRepository = $postRepository;
+        $this->sessionContainer = $sessionContainer;
+        $this->container = $container;
     }
 
     public function indexAction()
     {
+        //$this->sessionContainer->album = 'I got a new CD with awesome music. zxc';
+        //var_dump($this->sessionContainer->album);
+        //var_dump($this->container->get(SessionContainer::class)->album);
+        //die();
+
         return new ViewModel([
             'posts' => $this->postRepository->findAllPosts(),
         ]);

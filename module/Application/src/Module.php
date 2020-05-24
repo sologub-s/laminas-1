@@ -10,8 +10,14 @@ declare(strict_types=1);
 
 namespace Application;
 
+use Laminas\Mvc\MvcEvent;
+
 class Module
 {
+    public function onBootstrap(MvcEvent $e)
+    {
+    }
+
     public function getConfig() : array
     {
         return include __DIR__ . '/../config/module.config.php';

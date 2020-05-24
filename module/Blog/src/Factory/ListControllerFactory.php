@@ -13,6 +13,7 @@ use Blog\Model\PostRepositoryInterface;
 use Interop\Container\ContainerInterface;
 use Laminas\Db\Adapter\AdapterInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
+use Laminas\Session\Container as SessionContainer;
 
 class ListControllerFactory implements FactoryInterface
 {
@@ -27,6 +28,11 @@ class ListControllerFactory implements FactoryInterface
         //return new SomeServiceObject($container->get('Application\Db\ReadOnlyAdapter'));
         // $dbAdapter = $container->get(AdapterInterface::class); // Database adapter for Sql()
         // $config = $container->get('config'); // a plain config array =-)
-        return new ListController($container->get(PostRepositoryInterface::class)/*, $container->get(AdapterInterface::class)*/);
+        return new ListController(
+            $container->get(PostRepositoryInterface::class)
+            /*, $container->get(AdapterInterface::class)*/
+            , $container->get(SessionContainer::class)
+            , $container
+        );
     }
 }
