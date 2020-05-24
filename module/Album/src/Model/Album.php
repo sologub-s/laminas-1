@@ -17,7 +17,7 @@ use Laminas\InputFilter\InputFilterAwareInterface;
 use Laminas\InputFilter\InputFilterInterface;
 use Laminas\Validator\StringLength;
 
-class Album extends \ArrayObject implements InputFilterAwareInterface
+class Album implements InputFilterAwareInterface
 {
     public $id;
     public $artist;
