@@ -6,14 +6,13 @@
  * Time: 21:38
  */
 
-namespace Backend;
+namespace Frontend;
 
 use Laminas\Mvc\MvcEvent;
-use Laminas\Session\Container as SessionContainer;
 
 /**
  * Class Module
- * @package Backend
+ * @package Frontend
  */
 class Module
 {

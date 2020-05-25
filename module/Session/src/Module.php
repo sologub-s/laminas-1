@@ -18,28 +18,24 @@ use Laminas\Session\Container as SessionContainer;
  */
 class Module
 {
-
     /**
      * @param MvcEvent $e
      */
     public function onBootstrap(MvcEvent $e)
     {
-        $serviceManager = $e->getApplication()->getServiceManager();
-        $sessionContainer = $serviceManager->get(SessionContainer::class);
 
-        //$sessionContainer->album = 'I got a new CD with awesome music. session';
+        //\App::getSessionContainer()->album = 'I got a new CD with awesome music. session';
 
-        $moduleConfig = $serviceManager->get('config')['modules']['session']; // a plain config array =-)
+        $moduleConfig = \App::getConfig()['modules']['session']; // a plain config array =-)
 
-        $sessionContainer->admin = array_merge(
+        \App::getSessionContainer()->admin = array_merge(
             $moduleConfig['admin'],
-            $sessionContainer->admin ?? [],
+            \App::getSessionContainer()->admin ?? [],
         );
     }
 
     public function getConfig() : array
     {
         return include __DIR__ . '/../config/module.config.php';
-        //return [];
     }
 }

@@ -8,26 +8,16 @@
 
 namespace Backend\Controller;
 
-use Blog\Model\PostRepositoryInterface;
-use Interop\Container\ContainerInterface;
-use Laminas\Db\Adapter\AdapterInterface;
-use Laminas\Mvc\Controller\AbstractActionController;
-use Backend\Controller\BaseController;
-use Laminas\View\Model\ViewModel;
-use InvalidArgumentException;
-use Laminas\Session\Container as SessionContainer;
-use Session\ServiceInterface as SessionServiceInterface;
 use Backend\Form\LoginForm;
 
-class IndexController extends BaseController
+/**
+ * Class IndexController
+ * @package Backend\Controller
+ */
+class IndexController extends BaseBackendController
 {
     public function dashboardAction()
     {
-        //$this->sessionContainer->album = 'I got a new CD with awesome music. zxc';
-        //var_dump($this->sessionContainer->album);
-        //var_dump($this->container->get(SessionContainer::class)->album);
-        //die();
-
         $this->layout()->setVariables([
             'zxc' => 'ZXC_variable',
         ]);
@@ -41,8 +31,7 @@ class IndexController extends BaseController
     {
         $request   = $this->getRequest();
 
-        /** @var LoginForm $form */
-        $form = $this->container->get(LoginForm::class);
+        $form = new LoginForm();
         $form->init();
 
         $viewModel = [

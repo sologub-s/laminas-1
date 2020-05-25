@@ -23,9 +23,12 @@ return [
     'Laminas\I18n',
     'Laminas\Router',
     'Laminas\Validator',
+
+    'App', // put $serviceContainer into \App, so has to be the first in the list
     'Session',
-    'Application',
-    'Album',
-    'Blog',
+    //'Application',
+    //'Album',
+    //'Blog',
     'Backend',
+    'Frontend',
 ];

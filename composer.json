@@ -25,12 +25,16 @@
     },
     "autoload": {
         "psr-4": {
-            "Application\\": "module/Application/src/",
+            "App\\": "module/App/src/",
             "Album\\": "module/Album/src/",
             "Blog\\": "module/Blog/src/",
             "Session\\": "module/Session/src/",
-            "Backend\\": "module/Backend/src/"
-        }
+            "Backend\\": "module/Backend/src/",
+            "Frontend\\": "module/Frontend/src/"
+        },
+        "files": [
+            "App.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {

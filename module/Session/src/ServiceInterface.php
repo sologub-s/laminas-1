@@ -17,12 +17,6 @@ use Laminas\ServiceManager\ServiceManager;
 interface ServiceInterface
 {
     /**
-     * ServiceInterface constructor.
-     * @param ServiceManager $container
-     */
-    public function __construct(ServiceManager $container);
-
-    /**
      * @return bool
      */
     public function isAdminLogged(): bool;

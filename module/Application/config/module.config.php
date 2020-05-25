@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @see       https://github.com/laminas/laminas-mvc-skeleton for the canonical source repository
  * @copyright https://github.com/laminas/laminas-mvc-skeleton/blob/master/COPYRIGHT.md
@@ -16,12 +15,13 @@ use Laminas\ServiceManager\Factory\InvokableFactory;
 use Album\Controller\AlbumController;
 
 return [
+    // This lines opens the configuration for the RouteManager
     'router' => [
         'routes' => [
             'home' => [
                 'type'    => Literal::class,
                 'options' => [
-                    'route'    => '/',
+                    'route'    => '/application',
                     'defaults' => [
                         'controller' => Controller\IndexController::class,
                         //'controller' => AlbumController::class,
