@@ -1,0 +1,73 @@
+<?php
+use Backend\Form\AuthorForm;
+?>
+
+<h1>Author</h1>
+
+<?php if ($this->errorMessage !== ''): ?>
+    <div class="alert alert-danger" role="alert">
+        <?= $this->errorMessage ?>
+    </div>
+<?php endif; ?>
+
+<?php
+/** @var AuthorForm $form */
+
+$form = $this->form;
+
+$id = $form->get('id');
+$id->setAttribute('class', 'form-control');
+$id->setAttribute('type', 'text');
+
+$form->setAttribute('action', $this->url('backend/author/' . (is_null($this->entityId) ? 'add' : 'edit'), ['id' => $this->entityId]));
+
+$name = $form->get('name');
+$name->setAttribute('class', 'form-control');
+$name->setAttribute('placeholder', 'Name');
+
+$slug = $form->get('slug');
+$slug->setAttribute('class', 'form-control');
+$slug->setAttribute('placeholder', 'Slug');
+
+$submit = $form->get('submit');
+$submit->setAttribute('class', 'btn btn-primary');
+
+$form->prepare();
+?>
+
+<?php if (is_null($this->entityId)): ?>
+    <h3>Add entity</h3>
+<?php else: ?>
+    <h3>Edit entity</h3>
+<?php endif; ?>
+
+<?= $this->form()->openTag($form) ?>
+
+<fieldset>
+    <div class="form-group">
+        <?= $this->formLabel($name) ?>
+        <?= $this->formElement($name) ?>
+        <?=
+        $this->formElementErrors()
+            ->setMessageOpenFormat('<small class="form-text text-danger">')
+            ->setMessageCloseString('</small>')
+            //->render($id, ['class' => 'form-text text-muted'])
+            ->render($name)
+        ?>
+    </div>
+
+    <div class="form-group">
+        <?= $this->formLabel($slug) ?>
+        <?= $this->formElement($slug) ?>
+        <?=
+        $this->formElementErrors()
+            ->setMessageOpenFormat('<small class="form-text text-danger">')
+            ->setMessageCloseString('</small>')
+            ->render($slug)
+        ?>
+    </div>
+</fieldset>
+
+<?= $this->formSubmit($submit) ?>
+<?= $this->formHidden($form->get('id')) ?>
+<?= $this->form()->closeTag() ?>

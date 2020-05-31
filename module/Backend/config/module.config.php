@@ -50,6 +50,63 @@ return [
                             ],
                         ],
                     ],
+
+                    'author' => [
+                        'type' => Literal::class, // does not allow path variables like /param1/value1/param2/value2 etc.
+                        'options' => [
+                            'route'    => '/author',
+                        ],
+                        'may_terminate' => false, // whether the route may match by itself, if none of child routes matched
+                        'child_routes'  => [
+                            'list' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route'    => '/list',
+                                    'defaults' => [
+                                        'controller' => Controller\AuthorController::class,
+                                        'action'     => 'list',
+                                    ],
+                                ],
+                            ],
+                            'add' => [
+                                'type' => Literal::class, // allows path variables like /param1/value1/param2/value2 etc.
+                                'options' => [
+                                    'route'    => '/add',
+                                    'defaults' => [
+                                        'controller' => Controller\AuthorController::class,
+                                        'action'     => 'form',
+                                    ],
+                                ],
+                            ],
+                            'edit' => [
+                                'type' => Segment::class, // allows path variables like /param1/value1/param2/value2 etc.
+                                'options' => [
+                                    'route'    => '/edit/:id',
+                                    'defaults' => [
+                                        'controller' => Controller\AuthorController::class,
+                                        'action'     => 'form',
+                                    ],
+                                    'constraints' => [
+                                        'id' => '[1-9]\d*',
+                                    ],
+                                ],
+                            ],
+                            'delete' => [
+                                'type' => Segment::class, // allows path variables like /param1/value1/param2/value2 etc.
+                                'options' => [
+                                    'route'    => '/delete/:id',
+                                    'defaults' => [
+                                        'controller' => Controller\AuthorController::class,
+                                        'action'     => 'delete',
+                                    ],
+                                    'constraints' => [
+                                        'id' => '[1-9]\d*',
+                                    ],
+                                ],
+                            ],
+                        ]
+                    ],
+
                 ],
             ],
         ],
@@ -72,6 +129,7 @@ return [
     'controllers' => [
         'factories' => [
             Controller\IndexController::class => ReflectionBasedAbstractFactory::class, // automatically inject dependencies
+            Controller\AuthorController::class => ReflectionBasedAbstractFactory::class, // automatically inject dependencies
         ],
     ],
     'view_manager' => [
@@ -91,6 +149,22 @@ return [
                 'label' => 'Dashboard',
                 'route' => 'backend',
             ],
+
+            [
+                'label' => 'Author',
+                'route' => 'backend/author/list',
+                'pages' => [
+                    [
+                        'label' => 'Add Author',
+                        'route' => 'backend/author/add',
+                    ],
+                    [
+                        'label' => 'Edit Author',
+                        'route' => 'backend/author/edit',
+                    ],
+                ],
+            ],
+
             [
                 'label' => 'Logout',
                 'route' => 'backend/logout',

@@ -21,7 +21,9 @@
         "ext-pdo": "*",
         "laminas/laminas-navigation": "^2.9",
         "laminas/laminas-paginator": "^2.8",
-        "ext-mbstring": "*"
+        "ext-mbstring": "*",
+        "illuminate/database": "^7.12",
+        "illuminate/pagination": "^7.13"
     },
     "autoload": {
         "psr-4": {
