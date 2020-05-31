@@ -2,8 +2,8 @@
 /**
  * Created by PhpStorm.
  * User: Serhii Solohub
- * Date: 24.05.2020
- * Time: 18:27
+ * Date: 31.05.2020
+ * Time: 23:11
  */
 
 namespace Backend\Form;
@@ -12,10 +12,10 @@ use Laminas\Form\Form;
 use Laminas\Form\Element;
 
 /**
- * Class AuthorForm
+ * Class BookForm
  * @package Backend\Form
  */
-class AuthorForm extends Form
+class BookForm extends Form
 {
     public function init()
     {
@@ -29,9 +29,9 @@ class AuthorForm extends Form
 
         $this->add([
             'type' => Element\Text::class,
-            'name' => 'name',
+            'name' => 'title',
             'options' => [
-                'label' => 'Name',
+                'label' => 'Title',
             ],
         ]);
 
@@ -40,6 +40,16 @@ class AuthorForm extends Form
             'name' => 'slug',
             'options' => [
                 'label' => 'Slug',
+            ],
+        ]);
+
+        $this->add([
+            'type' => Element\Select::class,
+            'name' => 'id_author',
+            'options' => [
+                'label' => 'Author',
+                'empty_option' => 'Please choose an Author',
+                'value_options' => [],
             ],
         ]);
 

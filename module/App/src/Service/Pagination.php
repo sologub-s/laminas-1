@@ -91,6 +91,16 @@ class Pagination
     private $pathName = '';
 
     /**
+     * @var int|null
+     */
+    private $range = null;
+
+    /**
+     * @var string
+     */
+    private $rangeText = '...';
+
+    /**
      * @var bool
      */
     private $paramInTheFirstLink = false;
@@ -100,14 +110,16 @@ class Pagination
      * @param int $perPage
      * @param int|null $count
      * @param int $curPage
-     * @param int $radius
-     * @return self
+     * @param int $range
+     * @param string $rangeText
      */
-    public function __construct(int $perPage = 10, ?int $count = null, int $curPage = 1, int $radius = 3)
+    public function __construct(int $perPage = 10, ?int $count = null, int $curPage = 1, ?int $range = null, string $rangeText = '...')
     {
         $this->perPage = $perPage;
         $this->count = $count;
         $this->curPage = $curPage;
+        $this->range = $range;
+        $this->rangeText = $rangeText;
 
         return $this;
     }
@@ -139,9 +151,9 @@ class Pagination
     /**
      * @return bool
      */
-    public function isLastPage(): bool 
+    public function isLastPage(): bool
     {
-        return $this->curPage === $this->totalPages;
+        return $this->curPage === $this->totalPages || $this->totalPages === 0;
     }
 
     /**
@@ -191,6 +203,9 @@ class Pagination
     {
         $this->totalPages = (int)ceil($this->count / $this->perPage);
 
+        $this->curPage = min($this->totalPages, $this->curPage);
+        $this->curPage = max(1, $this->curPage);
+
         for ($i = 1; $i <= $this->totalPages; $i++) {
 
             // base link item
@@ -231,8 +246,11 @@ class Pagination
                 if ($i === 1 && !$this->paramInTheFirstLink) {
                     unset($exploded[$this->paramName]);
                 }
-                //$queryParametrical = http_build_query($exploded); // build parametrical uri from parsed uri
                 $queryParametrical = http_build_query($exploded); // build parametrical uri from parsed uri
+            }
+
+            if ($this->queryStringMode === self::QUERY_STRING_MODE_PATH) {
+                throw new Exception('Not implemented !');
             }
 
             // create the full href
@@ -261,5 +279,49 @@ class Pagination
         }
         $this->nextLink = new Link($nextLinkHref, false, $nextLinkPage, $this->nextLinkText);
 
+        // range
+        $toRemove = [];
+        for ($i = 1; $i <= $this->totalPages; $i++) {
+            if (is_null($this->range)) {
+                continue; // all the links, no ranging
+            }
+            if (
+                (
+                    ($i <= $this->curPage && $i > min(1 + $this->range, $this->totalPages)) // rightward of the first page
+                    &&
+                    ($i <= $this->curPage && $i < max($this->curPage - $this->range, 1)) // leftward of the current page
+                )
+                ||
+                (
+                    ($i >= $this->curPage && $i > min($this->curPage + $this->range, $this->totalPages)) // rightward of the current page
+                    &&
+                    ($i >= $this->curPage && $i < max($this->totalPages - $this->range, 1)) // leftward of the last page
+                )
+            ) {
+                $toRemove[] = $i;
+            }
+        }
+
+        $skipRemoves = [];
+        foreach ($toRemove as $k => $i) {
+            if (
+                (isset($this->links[$i - 1]) && !in_array($i - 1, $toRemove))
+                &&
+                (isset($this->links[$k + 1]) && !in_array($i + 1, $toRemove))
+            ) {
+                $skipRemoves[] = $k; // do not remove links if we have to remove only one link per line
+            }
+        }
+
+        foreach ($toRemove as $k => $i) {
+            if (in_array($k, $skipRemoves)) {
+                continue;
+            }
+            if (isset($toRemove[$k + 1]) && $toRemove[$k + 1] === $i + 1) { // insert only one range element at line
+                unset($this->links[$i]);
+                continue;
+            }
+            $this->links[$i] = new Link('#', false, 0, $this->rangeText, true);
+        }
     }
 }

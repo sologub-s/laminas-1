@@ -1,0 +1,9 @@
+<?php foreach ($this->actions as $action): ?>
+
+    <a class="<?= $action['class'] ?>"
+       href="<?= $action['href'] ?>"
+        <?php if ($action['confirm']): ?> onclick="return confirm('Are you sure ?');" <?php endif; ?>
+       alt="<?= $action['alt'] ?>"><?php if ($action['icon'] !== ''): ?><i
+            class="<?= $action['icon'] ?>"></i><?php endif; ?><?= $action['text'] ?></a>
+
+<?php endforeach; ?>

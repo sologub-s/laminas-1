@@ -18,6 +18,8 @@ use App\Controller\BaseActionController;
 abstract class BaseBackendController extends BaseActionController
 {
     const DEFAULT_LAYOUT = 'layout/backend';
+    const PAGINATION_GRID_PERPAGE = 10;
+    const PAGINATION_GRID_RANGE = 5;
 
     /**
      * @inheritDoc

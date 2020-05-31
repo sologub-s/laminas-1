@@ -23,18 +23,18 @@ $nextLink = $pagination->getNextLink();
             </li>
         <?php else: ?>
             <li class="page-item">
-                <a class="page-link" href="<?= $previousLink->getHref() ?>"><?= $previousLink->getText() ?></a>
-            </li>
+                <a class="page-link" href="<?= $previousLink->getHref() ?>"><?= $previousLink->getText() ?></a></li>
         <?php endif; ?>
 
         <?php foreach ($pagination->getLinks() as $link): ?>
-            <?php if ($link->isCurrent()): ?>
+            <?php if ($link->isSpacer()): ?>
+                <li class="page-item disabled"><span class="page-link"><?= $link->getText() ?></span></li>
+            <?php elseif ($link->isCurrent()): ?>
                 <li class="page-item active" aria-current="page">
                     <span class="page-link"><?= $link->getPage() ?><span class="sr-only">(current)</span></span>
                 </li>
             <?php else: ?>
-                <li class="page-item"><a class="page-link" href="<?= $link->getHref() ?>"><?= $link->getPage() ?></a>
-                </li>
+                <li class="page-item"><a class="page-link" href="<?= $link->getHref() ?>"><?= $link->getText() ?></a></li>
             <?php endif; ?>
         <?php endforeach; ?>
 
@@ -47,5 +47,6 @@ $nextLink = $pagination->getNextLink();
                 <a class="page-link" href="<?= $nextLink->getHref() ?>"><?= $nextLink->getText() ?></a>
             </li>
         <?php endif; ?>
+
     </ul>
 </nav>

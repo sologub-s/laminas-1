@@ -35,18 +35,25 @@ class Link
     private $text = '';
 
     /**
+     * @var bool
+     */
+    private $spacer = false;
+
+    /**
      * Link constructor.
      * @param string $href
      * @param bool $current
      * @param int $page
      * @param string|null $text
+     * @param bool $spacer
      */
-    public function __construct(string $href, bool $current, int $page, string $text = null)
+    public function __construct(string $href, bool $current, int $page, string $text = null, bool $spacer = false)
     {
         $this->href = $href;
         $this->current = $current;
         $this->page = $page;
         $this->text = $text ?? (string)$page;
+        $this->spacer = $spacer;
     }
 
     /**
@@ -81,5 +88,11 @@ class Link
         return $this->text;
     }
 
-
+    /**
+     * @return bool
+     */
+    public function isSpacer(): bool
+    {
+        return $this->spacer;
+    }
 }

@@ -51,6 +51,7 @@ return [
                         ],
                     ],
 
+                    // Author
                     'author' => [
                         'type' => Literal::class, // does not allow path variables like /param1/value1/param2/value2 etc.
                         'options' => [
@@ -107,6 +108,63 @@ return [
                         ]
                     ],
 
+                    // Book
+                    'book' => [
+                        'type' => Literal::class, // does not allow path variables like /param1/value1/param2/value2 etc.
+                        'options' => [
+                            'route'    => '/book',
+                        ],
+                        'may_terminate' => false, // whether the route may match by itself, if none of child routes matched
+                        'child_routes'  => [
+                            'list' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route'    => '/list',
+                                    'defaults' => [
+                                        'controller' => Controller\BookController::class,
+                                        'action'     => 'list',
+                                    ],
+                                ],
+                            ],
+                            'add' => [
+                                'type' => Literal::class, // allows path variables like /param1/value1/param2/value2 etc.
+                                'options' => [
+                                    'route'    => '/add',
+                                    'defaults' => [
+                                        'controller' => Controller\BookController::class,
+                                        'action'     => 'form',
+                                    ],
+                                ],
+                            ],
+                            'edit' => [
+                                'type' => Segment::class, // allows path variables like /param1/value1/param2/value2 etc.
+                                'options' => [
+                                    'route'    => '/edit/:id',
+                                    'defaults' => [
+                                        'controller' => Controller\BookController::class,
+                                        'action'     => 'form',
+                                    ],
+                                    'constraints' => [
+                                        'id' => '[1-9]\d*',
+                                    ],
+                                ],
+                            ],
+                            'delete' => [
+                                'type' => Segment::class, // allows path variables like /param1/value1/param2/value2 etc.
+                                'options' => [
+                                    'route'    => '/delete/:id',
+                                    'defaults' => [
+                                        'controller' => Controller\BookController::class,
+                                        'action'     => 'delete',
+                                    ],
+                                    'constraints' => [
+                                        'id' => '[1-9]\d*',
+                                    ],
+                                ],
+                            ],
+                        ]
+                    ],
+
                 ],
             ],
         ],
@@ -130,6 +188,7 @@ return [
         'factories' => [
             Controller\IndexController::class => ReflectionBasedAbstractFactory::class, // automatically inject dependencies
             Controller\AuthorController::class => ReflectionBasedAbstractFactory::class, // automatically inject dependencies
+            Controller\BookController::class => ReflectionBasedAbstractFactory::class, // automatically inject dependencies
         ],
     ],
     'view_manager' => [
@@ -150,6 +209,7 @@ return [
                 'route' => 'backend',
             ],
 
+            // Author
             [
                 'label' => 'Author',
                 'route' => 'backend/author/list',
@@ -161,6 +221,22 @@ return [
                     [
                         'label' => 'Edit Author',
                         'route' => 'backend/author/edit',
+                    ],
+                ],
+            ],
+
+            // Book
+            [
+                'label' => 'Book',
+                'route' => 'backend/book/list',
+                'pages' => [
+                    [
+                        'label' => 'Add Book',
+                        'route' => 'backend/book/add',
+                    ],
+                    [
+                        'label' => 'Edit Book',
+                        'route' => 'backend/book/edit',
                     ],
                 ],
             ],

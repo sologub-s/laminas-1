@@ -2,24 +2,25 @@
 /**
  * Created by PhpStorm.
  * User: Serhii Solohub
- * Date: 24.05.2020
- * Time: 15:56
+ * Date: 31.05.2020
+ * Time: 23:15
  */
 
 namespace Backend\Controller;
 
+use App\Model\Book;
 use App\Model\Author;
 use App\Service\Pagination;
-use Backend\Form\AuthorForm;
+use Backend\Form\BookForm;
 use Laminas\View\Model\ViewModel;
 use Laminas\View\Renderer\PhpRenderer;
 use Laminas\View\View;
 
 /**
- * Class AuthorController
+ * Class BookController
  * @package Backend\Controller
  */
-class AuthorController extends BaseBackendController
+class BookController extends BaseBackendController
 {
     public function listAction()
     {
@@ -28,12 +29,12 @@ class AuthorController extends BaseBackendController
         $page = (int)$this->getRequest()->getQuery('page', 1);
         $skip = ($page - 1) * self::PAGINATION_GRID_PERPAGE;
 
-        $itemsQuery = (new Author)
+        $itemsQuery = (new Book())
             //->where('active', 1)
-            ->with(['books',])
+            ->with(['author',])
+            ->orderBy('title', 'asc')
             ->orderBy('updated_at', 'desc')
-            ->orderBy('created_at', 'desc')
-            ->orderBy('name', 'asc');
+            ->orderBy('created_at', 'desc');
 
         $count = $itemsQuery->count();
 
@@ -62,25 +63,39 @@ class AuthorController extends BaseBackendController
         $request = $this->getRequest();
 
         // create form
-        $form = new AuthorForm();
+        $form = new BookForm();
         $form->init();
 
         $id = $this->params()->fromRoute('id');
+
+        $possibleAuthors = (new Author())
+            //->where('active', 1)
+            ->orderBy('name', 'asc')
+            ->get();
 
         $viewModel = [
             'form' => $form,
             'errorMessage' => '',
             'entityId' => $id,
+
+            'possibleAuthors' => $possibleAuthors,
         ];
 
         // if !$id then create new object else load object from db
-        $author = Author::find($id) ?? new Author;
+        $book = Book::find($id) ?? new Book;
+
+        $authorsValueOptions = [];
+        foreach ($possibleAuthors as $possibleAuthor) {
+            $authorsValueOptions[$possibleAuthor->id]
+                = sprintf('%s (%s) (%d)', $possibleAuthor->name, $possibleAuthor->slug, $possibleAuthor->id);
+        }
+        $form->get('id_author')->setValueOptions($authorsValueOptions);
 
         // set correct input filter to form
-        $form->setInputFilter($author->getInputFilter());
+        $form->setInputFilter($book->getInputFilter());
 
         // set data to form
-        $form->setData($author->getArrayCopy());
+        $form->setData($book->getArrayCopy());
 
         // if request is not POST
         if (!$request->isPost()) {
@@ -97,10 +112,10 @@ class AuthorController extends BaseBackendController
         }
 
         // save object
-        $author->fill($form->getData());
+        $book->fill($form->getData());
 
         try {
-            if (!$author->save()) {
+            if (!$book->save()) {
                 $message = 'Cannot save entity';
                 $viewModel['errorMessage'] = $message;
                 return $viewModel;
@@ -112,7 +127,7 @@ class AuthorController extends BaseBackendController
         }
 
         return $this->redirect()->toRoute(
-            is_null($this->params()->fromPost('submit_and_new')) ? 'backend/author/list' : 'backend/author/add',
+            is_null($this->params()->fromPost('submit_and_new')) ? 'backend/book/list' : 'backend/book/add',
         );
     }
 
@@ -120,10 +135,10 @@ class AuthorController extends BaseBackendController
     {
         $id = $this->params()->fromRoute('id');
 
-        Author::destroy($id);
+        Book::destroy($id);
 
         return $this->redirect()->toRoute(
-            'backend/author/list'
+            'backend/book/list'
         );
     }
 }

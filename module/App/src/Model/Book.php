@@ -2,14 +2,14 @@
 /**
  * Created by PhpStorm.
  * User: Serhii Solohub
- * Date: 26.05.2020
- * Time: 01:09
+ * Date: 31.05.2020
+ * Time: 23:04
  */
 
 namespace App\Model;
 
 use App\ClassComponent\Eloquent\Sluggable;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Laminas\Filter;
 use Laminas\InputFilter\InputFilter;
 use Laminas\InputFilter\InputFilterAwareInterface;
@@ -18,10 +18,10 @@ use Laminas\Validator;
 use App\Validator as CustomValidator;
 
 /**
- * Class Author
+ * Class Book
  * @package App\Model
  */
-final class Author extends Eloquent
+final class Book extends Eloquent
 {
     use Sluggable;
 
@@ -30,7 +30,7 @@ final class Author extends Eloquent
      *
      * @var string
      */
-    protected $table = 'author';
+    protected $table = 'book';
 
     /**
      * The model's default values for attributes.
@@ -39,7 +39,8 @@ final class Author extends Eloquent
      */
     protected $attributes = [
         'id' => null,
-        'name' => '',
+        'title' => '',
+        'id_author' => null,
     ];
 
     /**
@@ -47,25 +48,26 @@ final class Author extends Eloquent
      */
     protected $fillable = [
         //'id',
-        'name',
+        'title',
         'slug',
+        'id_author',
     ];
 
     /**
      * @var string[]
      */
     protected $sluggableOptions = [
-        'sourceField' => 'name',
+        'sourceField' => 'title',
     ];
 
     /**
-     * Book relation 1-to-*
+     * Author relation *-to-1
      *
-     * @return HasMany
+     * @return BelongsTo
      */
-    public function books()
+    public function author()
     {
-        return $this->hasMany(Book::class, 'id_author');
+        return $this->belongsTo(Author::class, 'id_author');
     }
 
     /**
@@ -80,7 +82,7 @@ final class Author extends Eloquent
         $inputFilter = new InputFilter();
 
         $inputFilter->add([
-            'name' => 'name',
+            'name' => 'title',
             'required' => true,
             'filters' => [
                 ['name' => Filter\StripTags::class],
@@ -116,6 +118,21 @@ final class Author extends Eloquent
             'validators' => [
                 [
                     'name' => CustomValidator\Slug::class,
+                ],
+            ],
+        ]);
+
+        $inputFilter->add([
+            'name' => 'id_author',
+            'required' => false,
+            'validators' => [
+                [
+                    'name' => Validator\Db\RecordExists::class,
+                    'options' => [
+                        'table' => (new Author)->getTable(),
+                        'field' => 'id',
+                        'adapter' => \App::getDbAdapter(),
+                    ],
                 ],
             ],
         ]);

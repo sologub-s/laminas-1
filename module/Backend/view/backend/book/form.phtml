@@ -1,8 +1,8 @@
 <?php
-use Backend\Form\AuthorForm;
+use Backend\Form\BookForm;
 ?>
 
-<h1>Author</h1>
+<h1>Book</h1>
 
 <?php if ($this->errorMessage !== ''): ?>
     <div class="alert alert-danger" role="alert">
@@ -11,7 +11,7 @@ use Backend\Form\AuthorForm;
 <?php endif; ?>
 
 <?php
-/** @var AuthorForm $form */
+/** @var BookForm $form */
 
 $form = $this->form;
 
@@ -19,15 +19,18 @@ $id = $form->get('id');
 $id->setAttribute('class', 'form-control');
 $id->setAttribute('type', 'text');
 
-$form->setAttribute('action', $this->url('backend/author/' . (is_null($this->entityId) ? 'add' : 'edit'), ['id' => $this->entityId]));
+$form->setAttribute('action', $this->url('backend/book/' . (is_null($this->entityId) ? 'add' : 'edit'), ['id' => $this->entityId]));
 
-$name = $form->get('name');
-$name->setAttribute('class', 'form-control');
-$name->setAttribute('placeholder', 'Name');
+$title = $form->get('title');
+$title->setAttribute('class', 'form-control');
+$title->setAttribute('placeholder', 'Title');
 
 $slug = $form->get('slug');
 $slug->setAttribute('class', 'form-control');
 $slug->setAttribute('placeholder', 'Slug');
+
+$id_author = $form->get('id_author');
+$id_author->setAttribute('class', 'form-control');
 
 $submit = $form->get('submit');
 $submit->setAttribute('class', 'btn btn-primary mr-1');
@@ -48,14 +51,14 @@ $form->prepare();
 
 <fieldset>
     <div class="form-group">
-        <?= $this->formLabel($name) ?>
-        <?= $this->formElement($name) ?>
+        <?= $this->formLabel($title) ?>
+        <?= $this->formElement($title) ?>
         <?=
         $this->formElementErrors()
             ->setMessageOpenFormat('<small class="form-text text-danger">')
             ->setMessageCloseString('</small>')
             //->render($id, ['class' => 'form-text text-muted'])
-            ->render($name)
+            ->render($title)
         ?>
     </div>
 
@@ -67,6 +70,17 @@ $form->prepare();
             ->setMessageOpenFormat('<small class="form-text text-danger">')
             ->setMessageCloseString('</small>')
             ->render($slug)
+        ?>
+    </div>
+
+    <div class="form-group">
+        <?= $this->formLabel($id_author) ?>
+        <?= $this->formElement($id_author) ?>
+        <?=
+        $this->formElementErrors()
+            ->setMessageOpenFormat('<small class="form-text text-danger">')
+            ->setMessageCloseString('</small>')
+            ->render($id_author)
         ?>
     </div>
 </fieldset>

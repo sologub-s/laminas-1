@@ -7,32 +7,52 @@
 $title = 'Authors list';
 //$this->headTitle($title);
 ?>
-<h1><?= $this->escapeHtml($title) ?></h1>
-<p>
-    <a href="<?= $this->url('backend/author/add') ?>">Add new author</a>
-</p>
-
-<table class="table">
-    <tr>
-        <th>id</th>
-        <th>name</th>
-        <th>action</th>
-    </tr>
-    <?php foreach ($this->items as $item) : ?>
+    <h1><?= $this->escapeHtml($title) ?></h1>
+    <p>
+        <a href="<?= $this->url('backend/author/add') ?>">Add new Author</a>
+    </p>
+    <table class="table">
         <tr>
-            <td><?= $this->escapeHtml($item->id) ?></td>
-            <td>
-                <?= $this->escapeHtml($item->name) ?>
-                <br/>
-                <small class="text-muted"><?= $this->escapeHtml($item->slug) ?></small>
-            </td>
-            <td>
-                <a href="<?= $this->url('backend/author/edit', ['id' => $item->id,]) ?>">Edit</a>
-                <a href="<?= $this->url('backend/author/delete', ['id' => $item->id,]) ?>"
-                   onclick="return confirm('Are you sure ?');">Delete</a>
-            </td>
+            <th>id</th>
+            <th>name</th>
+            <th>total Books</th>
+            <th>action</th>
         </tr>
-    <?php endforeach; ?>
-</table>
+        <?php foreach ($this->items as $item) : ?>
+            <tr>
+                <td><?= $this->escapeHtml($item->id) ?></td>
+                <td>
+                    <?= $this->escapeHtml($item->name) ?>
+                    <br/>
+                    <small class="text-muted"><?= $this->escapeHtml($item->slug) ?></small>
+                </td>
+                <td><?= $item->books->count() ?></td>
+                <td>
+                    <?= $this->partial('backend/partial/gridActions', [
+                        'actions' => [
+                            [
+                                'type' => 'edit',
+                                'href' => $this->url('backend/author/edit', ['id' => $item->id,]),
+                                'class' => 'btn btn-outline-warning',
+                                'alt' => 'Edit',
+                                'text' => '',
+                                'icon' => 'far fa-edit',
+                                'confirm' => false,
+                            ],
+                            [
+                                'type' => 'delete',
+                                'href' => $this->url('backend/author/delete', ['id' => $item->id,]),
+                                'class' => 'btn btn-outline-danger',
+                                'alt' => 'Delete',
+                                'text' => '',
+                                'icon' => 'far fa-trash-alt',
+                                'confirm' => true,
+                            ],
+                        ],
+                    ]); ?>
+                </td>
+            </tr>
+        <?php endforeach; ?>
+    </table>
 
 <?= $this->paginationHtml ?>

@@ -1,0 +1,61 @@
+<?php
+
+/**
+ * @var $item \App\Model\Book
+ */
+
+$title = 'Books list';
+//$this->headTitle($title);
+?>
+<h1><?= $this->escapeHtml($title) ?></h1>
+<p>
+    <a href="<?= $this->url('backend/book/add') ?>">Add new Book</a>
+</p>
+
+<table class="table">
+    <tr>
+        <th>id</th>
+        <th>title</th>
+        <th>Author</th>
+        <th>action</th>
+    </tr>
+    <?php foreach ($this->items as $item) : ?>
+        <tr>
+            <td><?= $this->escapeHtml($item->id) ?></td>
+            <td>
+                <?= $this->escapeHtml($item->title) ?>
+                <br/>
+                <small class="text-muted"><?= $this->escapeHtml($item->slug) ?></small>
+            </td>
+            <td>
+                <a href="<?= $this->url('backend/author/edit', ['id' => $item->author->id,]) ?>" target="_blank"><?= $this->escapeHtml($item->author->name) ?> (<?= $this->escapeHtml($item->author->id) ?>)</a>
+            </td>
+            <td>
+                <?= $this->partial('backend/partial/gridActions', [
+                    'actions' => [
+                        [
+                            'type' => 'edit',
+                            'href' => $this->url('backend/book/edit', ['id' => $item->id,]),
+                            'class' => 'btn btn-outline-warning',
+                            'alt' => 'Edit',
+                            'text' => '',
+                            'icon' => 'far fa-edit',
+                            'confirm' => false,
+                        ],
+                        [
+                            'type' => 'delete',
+                            'href' => $this->url('backend/book/delete', ['id' => $item->id,]),
+                            'class' => 'btn btn-outline-danger',
+                            'alt' => 'Delete',
+                            'text' => '',
+                            'icon' => 'far fa-trash-alt',
+                            'confirm' => true,
+                        ],
+                    ],
+                ]); ?>
+            </td>
+        </tr>
+    <?php endforeach; ?>
+</table>
+
+<?= $this->paginationHtml ?>
