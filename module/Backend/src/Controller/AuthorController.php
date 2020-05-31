@@ -9,7 +9,11 @@
 namespace Backend\Controller;
 
 use App\Model\Author;
+use App\Service\Pagination;
 use Backend\Form\AuthorForm;
+use Laminas\View\Model\ViewModel;
+use Laminas\View\Renderer\PhpRenderer;
+use Laminas\View\View;
 
 /**
  * Class AuthorController
@@ -17,23 +21,39 @@ use Backend\Form\AuthorForm;
  */
 class AuthorController extends BaseBackendController
 {
-    const GRID_PERPAGE = 10;
+    const PAGINATION_GRID_PERPAGE = 3;
 
     public function listAction()
     {
-        //$this->layout()->setVariables([]);
+        $this->layout()->setVariables(['ddd' => 333,]);
 
-        $page = (int)$this->getRequest()->getQuery('page');
+        $page = (int)$this->getRequest()->getQuery('page', 1);
+        $skip = ($page - 1) * self::PAGINATION_GRID_PERPAGE;
+
+        $itemsQuery = (new Author)
+            //->where('active', 1)
+            ->orderBy('updated_at', 'desc')
+            ->orderBy('created_at', 'desc')
+            ->orderBy('name', 'asc');
+
+        $count = $itemsQuery->count();
+
+        $uri = $this->getRequest()->getUri();
+        $queryString = $uri->getPath() . ($uri->getQuery() === '' ? '' : '?' . $uri->getQuery());
+
+        $pagination = new Pagination(self::PAGINATION_GRID_PERPAGE, $count, $page, 3);
+        $pagination->setQueryString($queryString);
+        $pagination->setQueryStringMode(Pagination::QUERY_STRING_MODE_PARAM);
+        $pagination->calculate();
 
         return [
-            'items' => (new Author)
-                //->where('active', 1)
-                ->orderBy('updated_at', 'desc')
-                ->orderBy('created_at', 'desc')
-                ->orderBy('name', 'asc')
-                ->skip(0) // offset
-                ->take(self::GRID_PERPAGE) // limit
+            'items' => $itemsQuery
+                ->skip($skip) // offset
+                ->take(self::PAGINATION_GRID_PERPAGE) // limit
                 ->get(),
+            'paginationHtml' => $this->renderPartial('backend/partial/pagination', [
+                'pagination' => $pagination,
+            ]),
         ];
     }
 

@@ -11,6 +11,8 @@ namespace App\Controller;
 use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\Mvc\MvcEvent;
 use Laminas\ServiceManager\Exception\ServiceNotFoundException;
+use Laminas\View\Model\ViewModel;
+use Laminas\View\Renderer\PhpRenderer;
 use Session\ServiceInterface as SessionServiceInterface;
 
 /**
@@ -47,6 +49,20 @@ abstract class BaseActionController extends AbstractActionController
     public function getSessionService(): object
     {
         return self::getService(SessionServiceInterface::class);
+    }
+
+    /**
+     * @param string $template
+     * @param array $variables
+     * @return string
+     */
+    public function renderPartial(string $template, array $variables = []): string
+    {
+        $viewModel = new ViewModel($this->layout()->getVariables()->getArrayCopy());
+        $viewModel->setVariables($variables);
+        $viewModel->setTemplate($template);
+        $renderer = \App::get(PhpRenderer::class);
+        return $renderer->render($viewModel);
     }
 
 }

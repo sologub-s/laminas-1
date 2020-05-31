@@ -1,0 +1,51 @@
+<?php
+/**
+ * @var $pagination App\Service\Pagination
+ */
+
+$pagination = $this->pagination;
+
+if ($pagination->getTotalPages() <= 1) {
+    return '';
+}
+
+$previousLink = $pagination->getPreviousLink();
+$nextLink = $pagination->getNextLink();
+
+?>
+
+<nav aria-label="pagination">
+    <ul class="pagination justify-content-center">
+
+        <?php if ($pagination->isFirstPage()): ?>
+            <li class="page-item disabled">
+                <span class="page-link"><?= $previousLink->getText() ?></span>
+            </li>
+        <?php else: ?>
+            <li class="page-item">
+                <a class="page-link" href="<?= $previousLink->getHref() ?>"><?= $previousLink->getText() ?></a>
+            </li>
+        <?php endif; ?>
+
+        <?php foreach ($pagination->getLinks() as $link): ?>
+            <?php if ($link->isCurrent()): ?>
+                <li class="page-item active" aria-current="page">
+                    <span class="page-link"><?= $link->getPage() ?><span class="sr-only">(current)</span></span>
+                </li>
+            <?php else: ?>
+                <li class="page-item"><a class="page-link" href="<?= $link->getHref() ?>"><?= $link->getPage() ?></a>
+                </li>
+            <?php endif; ?>
+        <?php endforeach; ?>
+
+        <?php if ($pagination->isLastPage()): ?>
+            <li class="page-item disabled">
+                <span class="page-link"><?= $nextLink->getText() ?></span>
+            </li>
+        <?php else: ?>
+            <li class="page-item">
+                <a class="page-link" href="<?= $nextLink->getHref() ?>"><?= $nextLink->getText() ?></a>
+            </li>
+        <?php endif; ?>
+    </ul>
+</nav>
