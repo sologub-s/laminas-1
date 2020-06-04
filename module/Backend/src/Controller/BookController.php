@@ -22,6 +22,25 @@ use Laminas\View\View;
  */
 class BookController extends BaseBackendController
 {
+    const ORDER_DEFAULT = 'updated_at_desc';
+
+    const ORDER_SPECIAL_SORTING = [
+        'author_name' => [
+            'join' => [
+                'table' => 'author',
+                'local' => 'book.id_author',
+                'sign' => '=',
+                'foreign' => 'author.id',
+            ],
+            'relationColumn' => 'name',
+            'continue' => true,
+        ],
+    ];
+
+    /**
+     * @return array
+     * @throws \Exception
+     */
     public function listAction()
     {
         $this->layout()->setVariables(['ddd' => 333,]);
@@ -31,18 +50,14 @@ class BookController extends BaseBackendController
 
         $itemsQuery = (new Book())
             //->where('active', 1)
-            ->with(['author',])
-            ->orderBy('title', 'asc')
-            ->orderBy('updated_at', 'desc')
-            ->orderBy('created_at', 'desc');
+            ->with(['author',]);
+
+        $itemsQuery = $this->applyOrder($itemsQuery);
 
         $count = $itemsQuery->count();
 
-        $uri = $this->getRequest()->getUri();
-        $queryString = $uri->getPath() . ($uri->getQuery() === '' ? '' : '?' . $uri->getQuery());
-
         $pagination = new Pagination(self::PAGINATION_GRID_PERPAGE, $count, $page, self::PAGINATION_GRID_RANGE);
-        $pagination->setQueryString($queryString);
+        $pagination->setQueryString($this->layout()->getVariable('queryString'));
         $pagination->setQueryStringMode(Pagination::QUERY_STRING_MODE_PARAM);
         $pagination->calculate();
 

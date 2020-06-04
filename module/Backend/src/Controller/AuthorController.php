@@ -11,6 +11,7 @@ namespace Backend\Controller;
 use App\Model\Author;
 use App\Service\Pagination;
 use Backend\Form\AuthorForm;
+use Exception;
 use Laminas\View\Model\ViewModel;
 use Laminas\View\Renderer\PhpRenderer;
 use Laminas\View\View;
@@ -21,6 +22,18 @@ use Laminas\View\View;
  */
 class AuthorController extends BaseBackendController
 {
+    const ORDER_DEFAULT = 'updated_at_desc';
+
+    const ORDER_SPECIAL_SORTING = [
+        'books_count' => [
+            'withCount' => ['books',],
+        ],
+    ];
+
+    /**
+     * @return array
+     * @throws Exception
+     */
     public function listAction()
     {
         $this->layout()->setVariables(['ddd' => 333,]);
@@ -30,18 +43,14 @@ class AuthorController extends BaseBackendController
 
         $itemsQuery = (new Author)
             //->where('active', 1)
-            ->with(['books',])
-            ->orderBy('updated_at', 'desc')
-            ->orderBy('created_at', 'desc')
-            ->orderBy('name', 'asc');
+            ->with(['books',]);
+
+        $itemsQuery = $this->applyOrder($itemsQuery);
 
         $count = $itemsQuery->count();
 
-        $uri = $this->getRequest()->getUri();
-        $queryString = $uri->getPath() . ($uri->getQuery() === '' ? '' : '?' . $uri->getQuery());
-
         $pagination = new Pagination(self::PAGINATION_GRID_PERPAGE, $count, $page, self::PAGINATION_GRID_RANGE);
-        $pagination->setQueryString($queryString);
+        $pagination->setQueryString($this->layout()->getVariable('queryString'));
         $pagination->setQueryStringMode(Pagination::QUERY_STRING_MODE_PARAM);
         $pagination->calculate();
 
@@ -105,7 +114,7 @@ class AuthorController extends BaseBackendController
                 $viewModel['errorMessage'] = $message;
                 return $viewModel;
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $message = sprintf('Cannot save entity because: %s', $e->getMessage());
             $viewModel['errorMessage'] = $message;
             return $viewModel;

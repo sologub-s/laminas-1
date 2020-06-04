@@ -14,7 +14,9 @@
 
 // best place for some kinds of custom configs
 
+use Laminas\ServiceManager\Factory\InvokableFactory;
 use Laminas\Session;
+use App\ViewHelper;
 
 return [
     'db' => [
@@ -67,4 +69,16 @@ return [
             'adminPassword' => '12345',
         ],
     ],
+
+    'view_helpers' => [
+        'aliases' => [
+            'date' => ViewHelper\Date::class,
+            'sortableColumnName' => ViewHelper\SortableColumnName::class,
+        ],
+        'factories' => [
+            ViewHelper\Date::class => InvokableFactory::class,
+            ViewHelper\SortableColumnName::class => InvokableFactory::class,
+        ],
+    ],
+
 ];

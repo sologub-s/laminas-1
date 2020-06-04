@@ -1,0 +1,12 @@
+<a href="<?= $this->href ?>">
+    <?= $this->columnName ?>
+    <?php if ($this->icon === 'up'): ?>
+        &nbsp;<i class="fas fa-chevron-up"></i>
+    <?php endif; ?>
+    <?php if ($this->icon === 'down'): ?>
+        &nbsp;<i class="fas fa-chevron-down"></i>
+    <?php endif; ?>
+</a>
+<?php if ($this->isDefault): ?>
+    <small><br />default ordering</small>
+<?php endif; ?>

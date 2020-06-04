@@ -1,8 +1,14 @@
 <?php
 
+use App\ViewHelper\Date as DateViewHelper;
+use App\Helper\QueryString as QueryStringHelper;
+
 /**
+ * @var $layout \Laminas\View\Model\ViewModel
  * @var $item \App\Model\Author
  */
+
+$layout = $this->layout();
 
 $title = 'Authors list';
 //$this->headTitle($title);
@@ -13,9 +19,11 @@ $title = 'Authors list';
     </p>
     <table class="table">
         <tr>
-            <th>id</th>
-            <th>name</th>
-            <th>total Books</th>
+            <th><?= $this->sortableColumnName($layout->queryString, $layout->orderBy, 'id', 'id', $layout->defaultOrderBy) ?></th>
+            <th><?= $this->sortableColumnName($layout->queryString, $layout->orderBy, 'name', 'name', $layout->defaultOrderBy) ?></th>
+            <th><?= $this->sortableColumnName($layout->queryString, $layout->orderBy, 'total Books', 'books_count', $layout->defaultOrderBy) ?></th>
+            <th><?= $this->sortableColumnName($layout->queryString, $layout->orderBy, 'date added', 'created_at', $layout->defaultOrderBy) ?></th>
+            <th><?= $this->sortableColumnName($layout->queryString, $layout->orderBy, 'date updated', 'updated_at', $layout->defaultOrderBy) ?></th>
             <th>action</th>
         </tr>
         <?php foreach ($this->items as $item) : ?>
@@ -27,6 +35,8 @@ $title = 'Authors list';
                     <small class="text-muted"><?= $this->escapeHtml($item->slug) ?></small>
                 </td>
                 <td><?= $item->books->count() ?></td>
+                <td><?= $this->date($item->created_at->timestamp, DateViewHelper::FORMAT_ADMIN_SIMPLE) ?></td>
+                <td><?= $this->date($item->updated_at->timestamp, DateViewHelper::FORMAT_ADMIN_SIMPLE) ?></td>
                 <td>
                     <?= $this->partial('backend/partial/gridActions', [
                         'actions' => [
