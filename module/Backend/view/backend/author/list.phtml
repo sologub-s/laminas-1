@@ -14,9 +14,13 @@ $title = 'Authors list';
 //$this->headTitle($title);
 ?>
     <h1><?= $this->escapeHtml($title) ?></h1>
-    <p>
+
+    <p class="custom-control-inline">
         <a href="<?= $this->url('backend/author/add') ?>">Add new Author</a>
     </p>
+
+    <?= $this->searchFormHtml ?>
+
     <table class="table">
         <tr>
             <th><?= $this->sortableColumnName($layout->queryString, $layout->orderBy, 'id', 'id', $layout->defaultOrderBy) ?></th>

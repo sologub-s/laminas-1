@@ -8,6 +8,7 @@
 
 namespace Backend\Controller;
 
+use App\Helper\QueryString as QueryStringHelper;
 use App\Model\Author;
 use App\Service\Pagination;
 use Backend\Form\AuthorForm;
@@ -46,6 +47,7 @@ class AuthorController extends BaseBackendController
             ->with(['books',]);
 
         $itemsQuery = $this->applyOrder($itemsQuery);
+        $itemsQuery = $this->applySearch($itemsQuery);
 
         $count = $itemsQuery->count();
 
@@ -61,6 +63,10 @@ class AuthorController extends BaseBackendController
                 ->get(),
             'paginationHtml' => $this->renderPartial('backend/partial/pagination', [
                 'pagination' => $pagination,
+            ]),
+            'searchFormHtml' => $this->renderPartial('backend/partial/searchForm', [
+                'searchTerm' => $this->getRequest()->getQuery('searchTerm'),
+                'searchFormAction' => $this->url()->fromRoute('backend/author/list'),
             ]),
         ];
     }

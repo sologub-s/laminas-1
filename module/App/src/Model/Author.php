@@ -9,6 +9,7 @@
 namespace App\Model;
 
 use App\ClassComponent\Eloquent\Sluggable;
+use App\ClassComponent\Eloquent\Fulltextable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Laminas\Filter;
 use Laminas\InputFilter\InputFilter;
@@ -24,6 +25,7 @@ use App\Validator as CustomValidator;
 final class Author extends Eloquent
 {
     use Sluggable;
+    use Fulltextable;
 
     /**
      * The table associated with the model.
@@ -47,6 +49,14 @@ final class Author extends Eloquent
      */
     protected $fillable = [
         //'id',
+        'name',
+        'slug',
+    ];
+
+    /**
+     * @var string[]
+     */
+    protected $searchSourceColumns = [
         'name',
         'slug',
     ];

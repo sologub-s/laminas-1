@@ -53,6 +53,7 @@ class BookController extends BaseBackendController
             ->with(['author',]);
 
         $itemsQuery = $this->applyOrder($itemsQuery);
+        $itemsQuery = $this->applySearch($itemsQuery);
 
         $count = $itemsQuery->count();
 
@@ -68,6 +69,10 @@ class BookController extends BaseBackendController
                 ->get(),
             'paginationHtml' => $this->renderPartial('backend/partial/pagination', [
                 'pagination' => $pagination,
+            ]),
+            'searchFormHtml' => $this->renderPartial('backend/partial/searchForm', [
+                'searchTerm' => $this->getRequest()->getQuery('searchTerm'),
+                'searchFormAction' => $this->url()->fromRoute('backend/book/list'),
             ]),
         ];
     }

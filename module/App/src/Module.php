@@ -6,6 +6,8 @@ namespace App;
 
 use Laminas\Mvc\MvcEvent;
 use Illuminate\Database\Capsule\Manager as Capsule;
+use Illuminate\Events\Dispatcher;
+use Illuminate\Container\Container;
 
 class Module
 {
@@ -26,6 +28,8 @@ class Module
             'collation' => \App::getConfig()['db']['collation'],
             'prefix'    => '',
         ]);
+        // Set the event dispatcher used by Eloquent models... (optional)
+        $capsule->setEventDispatcher(new Dispatcher(new Container));
         $capsule->setAsGlobal();
         $capsule->bootEloquent();
     }

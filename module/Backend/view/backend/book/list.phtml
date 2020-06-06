@@ -12,59 +12,64 @@ $layout = $this->layout();
 $title = 'Books list';
 //$this->headTitle($title);
 ?>
-<h1><?= $this->escapeHtml($title) ?></h1>
-<p>
-    <a href="<?= $this->url('backend/book/add') ?>">Add new Book</a>
-</p>
+    <h1><?= $this->escapeHtml($title) ?></h1>
 
-<table class="table">
-    <tr>
-        <th><?= $this->sortableColumnName($layout->queryString, $layout->orderBy, 'id', 'id', $layout->defaultOrderBy) ?></th>
-        <th><?= $this->sortableColumnName($layout->queryString, $layout->orderBy, 'title', 'title', $layout->defaultOrderBy) ?></th>
-        <th><?= $this->sortableColumnName($layout->queryString, $layout->orderBy, 'Author', 'author_name', $layout->defaultOrderBy) ?></th>
-        <th><?= $this->sortableColumnName($layout->queryString, $layout->orderBy, 'date added', 'created_at', $layout->defaultOrderBy) ?></th>
-        <th><?= $this->sortableColumnName($layout->queryString, $layout->orderBy, 'date updated', 'updated_at', $layout->defaultOrderBy) ?></th>
-        <th>action</th>
-    </tr>
-    <?php foreach ($this->items as $item) : ?>
+    <p class="custom-control-inline">
+        <a href="<?= $this->url('backend/book/add') ?>">Add new Book</a>
+    </p>
+
+<?= $this->searchFormHtml ?>
+
+    <table class="table">
         <tr>
-            <td><?= $this->escapeHtml($item->id) ?></td>
-            <td>
-                <?= $this->escapeHtml($item->title) ?>
-                <br/>
-                <small class="text-muted"><?= $this->escapeHtml($item->slug) ?></small>
-            </td>
-            <td>
-                <a href="<?= $this->url('backend/author/edit', ['id' => $item->author->id,]) ?>" target="_blank"><?= $this->escapeHtml($item->author->name) ?> (<?= $this->escapeHtml($item->author->id) ?>)</a>
-            </td>
-            <td><?= $this->date($item->created_at->timestamp, DateViewHelper::FORMAT_ADMIN_SIMPLE) ?></td>
-            <td><?= $this->date($item->updated_at->timestamp, DateViewHelper::FORMAT_ADMIN_SIMPLE) ?></td>
-            <td>
-                <?= $this->partial('backend/partial/gridActions', [
-                    'actions' => [
-                        [
-                            'type' => 'edit',
-                            'href' => $this->url('backend/book/edit', ['id' => $item->id,]),
-                            'class' => 'btn btn-outline-warning',
-                            'alt' => 'Edit',
-                            'text' => '',
-                            'icon' => 'far fa-edit',
-                            'confirm' => false,
-                        ],
-                        [
-                            'type' => 'delete',
-                            'href' => $this->url('backend/book/delete', ['id' => $item->id,]),
-                            'class' => 'btn btn-outline-danger',
-                            'alt' => 'Delete',
-                            'text' => '',
-                            'icon' => 'far fa-trash-alt',
-                            'confirm' => true,
-                        ],
-                    ],
-                ]); ?>
-            </td>
+            <th><?= $this->sortableColumnName($layout->queryString, $layout->orderBy, 'id', 'id', $layout->defaultOrderBy) ?></th>
+            <th><?= $this->sortableColumnName($layout->queryString, $layout->orderBy, 'title', 'title', $layout->defaultOrderBy) ?></th>
+            <th><?= $this->sortableColumnName($layout->queryString, $layout->orderBy, 'Author', 'author_name', $layout->defaultOrderBy) ?></th>
+            <th><?= $this->sortableColumnName($layout->queryString, $layout->orderBy, 'date added', 'created_at', $layout->defaultOrderBy) ?></th>
+            <th><?= $this->sortableColumnName($layout->queryString, $layout->orderBy, 'date updated', 'updated_at', $layout->defaultOrderBy) ?></th>
+            <th>action</th>
         </tr>
-    <?php endforeach; ?>
-</table>
+        <?php foreach ($this->items as $item) : ?>
+            <tr>
+                <td><?= $this->escapeHtml($item->id) ?></td>
+                <td>
+                    <?= $this->escapeHtml($item->title) ?>
+                    <br/>
+                    <small class="text-muted"><?= $this->escapeHtml($item->slug) ?></small>
+                </td>
+                <td>
+                    <a href="<?= $this->url('backend/author/edit', ['id' => $item->author->id,]) ?>"
+                       target="_blank"><?= $this->escapeHtml($item->author->name) ?>
+                        (<?= $this->escapeHtml($item->author->id) ?>)</a>
+                </td>
+                <td><?= $this->date($item->created_at->timestamp, DateViewHelper::FORMAT_ADMIN_SIMPLE) ?></td>
+                <td><?= $this->date($item->updated_at->timestamp, DateViewHelper::FORMAT_ADMIN_SIMPLE) ?></td>
+                <td>
+                    <?= $this->partial('backend/partial/gridActions', [
+                        'actions' => [
+                            [
+                                'type' => 'edit',
+                                'href' => $this->url('backend/book/edit', ['id' => $item->id,]),
+                                'class' => 'btn btn-outline-warning',
+                                'alt' => 'Edit',
+                                'text' => '',
+                                'icon' => 'far fa-edit',
+                                'confirm' => false,
+                            ],
+                            [
+                                'type' => 'delete',
+                                'href' => $this->url('backend/book/delete', ['id' => $item->id,]),
+                                'class' => 'btn btn-outline-danger',
+                                'alt' => 'Delete',
+                                'text' => '',
+                                'icon' => 'far fa-trash-alt',
+                                'confirm' => true,
+                            ],
+                        ],
+                    ]); ?>
+                </td>
+            </tr>
+        <?php endforeach; ?>
+    </table>
 
 <?= $this->paginationHtml ?>

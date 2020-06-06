@@ -1,0 +1,14 @@
+<form class="form-inline mb-3 float-right" action="<?= $this->searchFormAction ?>" onsubmit="return $(this).find('input[type=text]').val() !== '';">
+    <div class="input-group input-group-inline">
+        <input type="text" class="form-control" name="searchTerm" placeholder="Search request..." aria-label="Recipient's username"
+               aria-describedby="button-addon2" value="<?= $this->searchTerm ?>">
+        <?php if (!is_null($this->searchTerm)): ?>
+        <div class="input-group-append">
+            <button class="btn btn-outline-secondary" type="button" onclick="$(this).closest('form').find('input[type=text]').remove(); $(this).closest('form').submit();">Reset</button>
+        </div>
+        <?php endif; ?>
+        <div class="input-group-append">
+            <button class="btn btn-outline-secondary" type="submit">Search</button>
+        </div>
+    </div>
+</form>

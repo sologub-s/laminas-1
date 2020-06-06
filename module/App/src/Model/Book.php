@@ -8,6 +8,7 @@
 
 namespace App\Model;
 
+use App\ClassComponent\Eloquent\Fulltextable;
 use App\ClassComponent\Eloquent\Sluggable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Laminas\Filter;
@@ -24,6 +25,7 @@ use App\Validator as CustomValidator;
 final class Book extends Eloquent
 {
     use Sluggable;
+    use Fulltextable;
 
     /**
      * The table associated with the model.

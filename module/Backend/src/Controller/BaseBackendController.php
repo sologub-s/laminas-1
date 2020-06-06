@@ -10,6 +10,7 @@ namespace Backend\Controller;
 
 use App\Helper\QueryString as QueryStringHelper;
 use App\Model\Eloquent;
+use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Laminas\Mvc\MvcEvent;
 use App\Controller\BaseActionController;
@@ -86,7 +87,7 @@ abstract class BaseBackendController extends BaseActionController
      * @param Builder $queryModel
      * @param string $orderString
      * @return Builder
-     * @throws \Exception
+     * @throws Exception
      */
     protected function applyOrder(Builder $queryModel, string $orderString = null): Builder
     {
@@ -117,6 +118,30 @@ abstract class BaseBackendController extends BaseActionController
             }
             $queryModel->orderBy($column, $direction);
         }
+        return $queryModel;
+    }
+
+    /**
+     * @param Builder $queryModel
+     * @param string|null $searchTerm
+     * @return Builder
+     * @throws Exception
+     */
+    protected function applySearch(Builder $queryModel, string $searchTerm = null): Builder
+    {
+        $searchTerm = $searchTerm ?? $this->getRequest()->getQuery('searchTerm');
+
+        if (is_null($searchTerm)) {
+            return $queryModel; // no serach request
+        }
+
+        if (!is_string($searchTerm)) {
+            $message = 'Params searchTerm must be of type string';
+            throw new Exception($message);
+        }
+
+        $queryModel->searchLike($searchTerm);
+
         return $queryModel;
     }
 

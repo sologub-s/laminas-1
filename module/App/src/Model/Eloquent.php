@@ -22,12 +22,20 @@ use Laminas\InputFilter\InputFilterInterface;
  */
 abstract class Eloquent extends BaseEloquentModel implements InputFilterAwareInterface
 {
+
     /**
      * The storage format of the model's date columns.
      *
      * @var string
      */
     protected $dateFormat = 'U';
+
+    /**
+     * false to disable handling of created_at and updated_at columns
+     *
+     * @var bool
+     */
+    public $timestamps = true;
 
     /**
      * @var InputFilter|InputFilterInterface
@@ -76,6 +84,35 @@ abstract class Eloquent extends BaseEloquentModel implements InputFilterAwareInt
             $this->createSlugIfEmpty();
         }
         return parent::save($options);
+    }
+
+    public static function boot()
+    {
+        parent::boot();
+
+        self::creating(function($model){
+            // ... code here
+        });
+
+        self::created(function($model){
+            // ... code here
+        });
+
+        self::updating(function($model){
+            // ... code here
+        });
+
+        self::updated(function($model){
+            // ... code here
+        });
+
+        self::deleting(function($model){
+            // ... code here
+        });
+
+        self::deleted(function($model){
+            // ... code here
+        });
     }
 
 
