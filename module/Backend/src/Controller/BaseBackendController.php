@@ -74,6 +74,8 @@ abstract class BaseBackendController extends BaseActionController
             // query
             'uri' => $uri,
             'queryString' => $uri->getPath() . ($uri->getQuery() === '' ? '' : '?' . $uri->getQuery()),
+            'pathString' => $uri->getPath(),
+            'parametricalString' => $uri->getQuery(),
 
             // ordering
             'orderBy' => $this->getRequest()->getQuery('orderBy', static::ORDER_DEFAULT),
@@ -100,14 +102,14 @@ abstract class BaseBackendController extends BaseActionController
 
                 $withCount = static::ORDER_SPECIAL_SORTING[$column]['withCount'] ?? [];
                 if (count($withCount) > 0) {
-                    $queryModel = $queryModel->withCount(static::ORDER_SPECIAL_SORTING[$column]['withCount']);
+                    $queryModel = $queryModel->withCount($withCount);
                 }
 
                 $join = static::ORDER_SPECIAL_SORTING[$column]['join'] ?? null;
                 if (!is_null($join)) {
                     $relationColumn = static::ORDER_SPECIAL_SORTING[$column]['relationColumn'] ?? 'id';
                     $queryModel = $queryModel
-                        ->select('*')
+                        ->select($queryModel->getModel()->getTable() . '.*')
                         ->join($join['table'], $join['local'], $join['sign'], $join['foreign'])
                         ->orderBy($join['table'].'.'.$relationColumn, $direction);
                 }
@@ -132,15 +134,76 @@ abstract class BaseBackendController extends BaseActionController
         $searchTerm = $searchTerm ?? $this->getRequest()->getQuery('searchTerm');
 
         if (is_null($searchTerm)) {
-            return $queryModel; // no serach request
+            return $queryModel; // no search request
         }
 
         if (!is_string($searchTerm)) {
-            $message = 'Params searchTerm must be of type string';
+            $message = 'Param searchTerm must be of type string';
             throw new Exception($message);
         }
 
         $queryModel->searchLike($searchTerm);
+
+        return $queryModel;
+    }
+
+    /**
+     * @param Builder $queryModel
+     * @param array|null $filtersValues
+     * @return Builder
+     * @throws Exception
+     */
+    protected function applyFilters(Builder $queryModel, array $filtersValues = null): Builder
+    {
+        $filtersValues = $filtersValues ?? $this->getRequest()->getQuery('filtersValues');
+
+        if (is_null($filtersValues) || count($filtersValues) === 0) {
+            return $queryModel; // no search request
+        }
+
+        if (!is_array($filtersValues)) {
+            $message = 'Param filtersValue must be of type string';
+            throw new Exception($message);
+        }
+
+        foreach ($this->filtersList ?? [] as $filterCode => $filterItem) {
+
+            if ($filterItem['special'] ?? false) {
+                continue;
+            }
+
+            if ($filterItem['type'] === 'number') {
+
+                if (!array_key_exists($filterItem['name'], $filtersValues)) {
+                    continue;
+                }
+
+                $filterValue = $filtersValues[$filterItem['name']];
+
+                if ($filterValue === '') {
+                    continue;
+                }
+
+                //$queryModel->where(sprintf('`%s`.%s', $queryModel->getQuery()->from, $filterItem['column']), '=', $filterValue);
+                $queryModel->whereRaw(sprintf('`%s`.%s = ?', $queryModel->getQuery()->from, $filterItem['column']), [$filterValue,]);
+            }
+
+            if ($filterItem['type'] === 'text') {
+
+                if (!array_key_exists($filterItem['name'], $filtersValues)) {
+                    continue;
+                }
+
+                $filterValue = $filtersValues[$filterItem['name']];
+
+                if ($filterValue === '') {
+                    continue;
+                }
+
+                //$queryModel->where(sprintf('`%s`.%s', $queryModel->getQuery()->from, $filterItem['column']), 'LIKE', '%'.$filterValue.'%');
+                $queryModel->whereRaw(sprintf('`%s`.%s LIKE ?', $queryModel->getQuery()->from, $filterItem['column']), ['%'.$filterValue.'%',]);
+            }
+        }
 
         return $queryModel;
     }

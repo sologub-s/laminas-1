@@ -1,8 +1,8 @@
 <?php
-use Backend\Form\BookForm;
+use Backend\Form\GenreForm;
 ?>
 
-<h1>Book</h1>
+<h1>Genre</h1>
 
 <?php if ($this->errorMessage !== ''): ?>
     <div class="alert alert-danger" role="alert">
@@ -11,7 +11,7 @@ use Backend\Form\BookForm;
 <?php endif; ?>
 
 <?php
-/** @var BookForm $form */
+/** @var GenreForm $form */
 
 $form = $this->form;
 
@@ -19,7 +19,7 @@ $id = $form->get('id');
 $id->setAttribute('class', 'form-control');
 $id->setAttribute('type', 'text');
 
-$form->setAttribute('action', $this->url('backend/book/' . (is_null($this->entityId) ? 'add' : 'edit'), ['id' => $this->entityId]));
+$form->setAttribute('action', $this->url('backend/genre/' . (is_null($this->entityId) ? 'add' : 'edit'), ['id' => $this->entityId]));
 
 $title = $form->get('title');
 $title->setAttribute('class', 'form-control');
@@ -29,11 +29,9 @@ $slug = $form->get('slug');
 $slug->setAttribute('class', 'form-control');
 $slug->setAttribute('placeholder', 'Slug');
 
-$id_author = $form->get('id_author');
-$id_author->setAttribute('class', 'form-control');
-
-$genres = $form->get('genres');
-$genres->setAttribute('class', 'form-control');
+$description = $form->get('description');
+$description->setAttribute('class', 'form-control');
+$description->setAttribute('placeholder', 'Description');
 
 $submit = $form->get('submit');
 $submit->setAttribute('class', 'btn btn-primary mr-1');
@@ -77,24 +75,14 @@ $form->prepare();
     </div>
 
     <div class="form-group">
-        <?= $this->formLabel($id_author) ?>
-        <?= $this->formElement($id_author) ?>
+        <?= $this->formLabel($description) ?>
+        <?= $this->formElement($description) ?>
         <?=
         $this->formElementErrors()
             ->setMessageOpenFormat('<small class="form-text text-danger">')
             ->setMessageCloseString('</small>')
-            ->render($id_author)
-        ?>
-    </div>
-
-    <div class="form-group">
-        <?= $this->formLabel($genres) ?>
-        <?= $this->formElement($genres) ?>
-        <?=
-        $this->formElementErrors()
-            ->setMessageOpenFormat('<small class="form-text text-danger">')
-            ->setMessageCloseString('</small>')
-            ->render($genres)
+            //->render($id, ['class' => 'form-text text-muted'])
+            ->render($description)
         ?>
     </div>
 </fieldset>

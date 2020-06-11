@@ -16,10 +16,12 @@ $title = 'Authors list';
     <h1><?= $this->escapeHtml($title) ?></h1>
 
     <p class="custom-control-inline">
-        <a href="<?= $this->url('backend/author/add') ?>">Add new Author</a>
+        <a class="btn btn-primary" href="<?= $this->url('backend/author/add') ?>"><i class="fas fa-plus"></i> Add new Author</a>
     </p>
 
     <?= $this->searchFormHtml ?>
+
+    <?= $this->filtersFormHtml ?>
 
     <table class="table">
         <tr>

@@ -74,10 +74,12 @@ return [
         'aliases' => [
             'date' => ViewHelper\Date::class,
             'sortableColumnName' => ViewHelper\SortableColumnName::class,
+            'getToHidden' => ViewHelper\GetToHidden::class,
         ],
         'factories' => [
             ViewHelper\Date::class => InvokableFactory::class,
             ViewHelper\SortableColumnName::class => InvokableFactory::class,
+            ViewHelper\GetToHidden::class => InvokableFactory::class,
         ],
     ],
 

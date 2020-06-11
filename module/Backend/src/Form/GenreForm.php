@@ -2,8 +2,8 @@
 /**
  * Created by PhpStorm.
  * User: Serhii Solohub
- * Date: 31.05.2020
- * Time: 23:11
+ * Date: 24.05.2020
+ * Time: 18:27
  */
 
 namespace Backend\Form;
@@ -12,10 +12,10 @@ use Laminas\Form\Form;
 use Laminas\Form\Element;
 
 /**
- * Class BookForm
+ * Class GenreForm
  * @package Backend\Form
  */
-class BookForm extends Form
+class GenreForm extends Form
 {
     public function init()
     {
@@ -44,25 +44,10 @@ class BookForm extends Form
         ]);
 
         $this->add([
-            'type' => Element\Select::class,
-            'name' => 'id_author',
+            'type' => Element\Textarea::class,
+            'name' => 'description',
             'options' => [
-                'label' => 'Author',
-                'empty_option' => 'Please choose an Author',
-                'value_options' => [],
-            ],
-        ]);
-
-        $this->add([
-            'type' => Element\Select::class,
-            'name' => 'genres',
-            'options' => [
-                'label' => 'Genres',
-                'empty_option' => 'Please choose Genres',
-                'value_options' => [],
-            ],
-            'attributes' => [
-                'multiple' => true,
+                'label' => 'Description',
             ],
         ]);
 

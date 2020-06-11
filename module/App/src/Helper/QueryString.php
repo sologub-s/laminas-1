@@ -41,14 +41,26 @@ abstract class QueryString
         }, $exploded); // decode parsed uri
 
         $exploded = array_filter($exploded, function ($paramName) use ($paramsRemove) {
-            return !in_array($paramName, $paramsRemove);
+            $paramName = urldecode($paramName);
+            $explodedParamName = explode('[', $paramName);
+            return !in_array($paramName, $paramsRemove) && !in_array($explodedParamName[0] ?? '', $paramsRemove);
         }, ARRAY_FILTER_USE_KEY); // remove page param from the parsed uri
 
         foreach ($paramsUpsert as $paramName => $paramValue) {
+            if ($exploded[$paramName] ?? false) {
+                unset($exploded[$paramName]);
+            }
+            $paramName = urldecode($paramName);
+            $paramValue = urldecode($paramValue);
             $exploded[$paramName] = $paramValue;
         }
 
-        $queryParametrical = http_build_query($exploded); // build parametrical uri from parsed uri
+        //$queryParametrical = http_build_query($exploded); // build parametrical uri from parsed uri
+        foreach ($exploded ?? [] as $k => $v) {
+            $exploded[$k] = $k . '=' . $v;
+        }
+        $queryParametrical = implode('&', $exploded ?? []); // build parametrical uri from parsed uri
+        //$queryParametrical = http_build_query($exploded); // build parametrical uri from parsed uri
 
         // create the full URI
         $result = $queryPath . ($queryParametrical === '' ? '' : '?' . $queryParametrical);

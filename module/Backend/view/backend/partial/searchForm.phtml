@@ -1,3 +1,15 @@
+<?php
+
+use App\Helper\QueryString as QueryStringHelper;
+
+/**
+ * @var $layout \Laminas\View\Model\ViewModel
+ */
+
+$layout = $this->layout();
+
+?>
+
 <form class="form-inline mb-3 float-right" action="<?= $this->searchFormAction ?>" onsubmit="return $(this).find('input[type=text]').val() !== '';">
     <div class="input-group input-group-inline">
         <input type="text" class="form-control" name="searchTerm" placeholder="Search request..." aria-label="Recipient's username"
@@ -11,4 +23,7 @@
             <button class="btn btn-outline-secondary" type="submit">Search</button>
         </div>
     </div>
+
+    <?= $this->getToHidden(QueryStringHelper::queryStringParams('?'.$layout->parametricalString, ['searchTerm',])) ?>
+
 </form>

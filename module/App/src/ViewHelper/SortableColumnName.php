@@ -76,7 +76,7 @@ class SortableColumnName extends AbstractHelper
         if (count($currentOrderArray) === 0) {
             $href = QueryStringHelper::queryStringParams($queryString, ['orderBy',]);
         }
-        // else upsert orderByParam by the imploded $currentOrderArray
+        // else upsert orderBy param by the imploded $currentOrderArray
         else {
             $orderBy = QueryStringHelper::composeOrderString($currentOrderArray);
             $href = QueryStringHelper::queryStringParams($queryString, [], ['orderBy' => $orderBy,]);

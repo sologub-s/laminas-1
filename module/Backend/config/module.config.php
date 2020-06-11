@@ -165,6 +165,63 @@ return [
                         ]
                     ],
 
+                    // Genre
+                    'genre' => [
+                        'type' => Literal::class, // does not allow path variables like /param1/value1/param2/value2 etc.
+                        'options' => [
+                            'route'    => '/genre',
+                        ],
+                        'may_terminate' => false, // whether the route may match by itself, if none of child routes matched
+                        'child_routes'  => [
+                            'list' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route'    => '/list',
+                                    'defaults' => [
+                                        'controller' => Controller\GenreController::class,
+                                        'action'     => 'list',
+                                    ],
+                                ],
+                            ],
+                            'add' => [
+                                'type' => Literal::class, // allows path variables like /param1/value1/param2/value2 etc.
+                                'options' => [
+                                    'route'    => '/add',
+                                    'defaults' => [
+                                        'controller' => Controller\GenreController::class,
+                                        'action'     => 'form',
+                                    ],
+                                ],
+                            ],
+                            'edit' => [
+                                'type' => Segment::class, // allows path variables like /param1/value1/param2/value2 etc.
+                                'options' => [
+                                    'route'    => '/edit/:id',
+                                    'defaults' => [
+                                        'controller' => Controller\GenreController::class,
+                                        'action'     => 'form',
+                                    ],
+                                    'constraints' => [
+                                        'id' => '[1-9]\d*',
+                                    ],
+                                ],
+                            ],
+                            'delete' => [
+                                'type' => Segment::class, // allows path variables like /param1/value1/param2/value2 etc.
+                                'options' => [
+                                    'route'    => '/delete/:id',
+                                    'defaults' => [
+                                        'controller' => Controller\GenreController::class,
+                                        'action'     => 'delete',
+                                    ],
+                                    'constraints' => [
+                                        'id' => '[1-9]\d*',
+                                    ],
+                                ],
+                            ],
+                        ]
+                    ],
+
                 ],
             ],
         ],
@@ -189,6 +246,7 @@ return [
             Controller\IndexController::class => ReflectionBasedAbstractFactory::class, // automatically inject dependencies
             Controller\AuthorController::class => ReflectionBasedAbstractFactory::class, // automatically inject dependencies
             Controller\BookController::class => ReflectionBasedAbstractFactory::class, // automatically inject dependencies
+            Controller\GenreController::class => ReflectionBasedAbstractFactory::class, // automatically inject dependencies
         ],
     ],
     'view_manager' => [
@@ -237,6 +295,22 @@ return [
                     [
                         'label' => 'Edit Book',
                         'route' => 'backend/book/edit',
+                    ],
+                ],
+            ],
+
+            // Genre
+            [
+                'label' => 'Genre',
+                'route' => 'backend/genre/list',
+                'pages' => [
+                    [
+                        'label' => 'Add Genre',
+                        'route' => 'backend/genre/add',
+                    ],
+                    [
+                        'label' => 'Edit Genre',
+                        'route' => 'backend/genre/edit',
                     ],
                 ],
             ],

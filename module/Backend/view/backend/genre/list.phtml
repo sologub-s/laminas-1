@@ -1,21 +1,22 @@
 <?php
 
 use App\ViewHelper\Date as DateViewHelper;
+use App\Helper\QueryString as QueryStringHelper;
 
 /**
  * @var $layout \Laminas\View\Model\ViewModel
- * @var $item \App\Model\Book
+ * @var $item \App\Model\Genre
  */
 
 $layout = $this->layout();
 
-$title = 'Books list';
+$title = 'Genres list';
 //$this->headTitle($title);
 ?>
     <h1><?= $this->escapeHtml($title) ?></h1>
 
     <p class="custom-control-inline">
-        <a class="btn btn-primary" href="<?= $this->url('backend/book/add') ?>"><i class="fas fa-plus"></i> Add new Book</a>
+        <a class="btn btn-primary" href="<?= $this->url('backend/genre/add') ?>"><i class="fas fa-plus"></i> Add new Genre</a>
     </p>
 
     <?= $this->searchFormHtml ?>
@@ -26,10 +27,10 @@ $title = 'Books list';
         <tr>
             <th><?= $this->sortableColumnName($layout->queryString, $layout->orderBy, 'id', 'id', $layout->defaultOrderBy) ?></th>
             <th><?= $this->sortableColumnName($layout->queryString, $layout->orderBy, 'title', 'title', $layout->defaultOrderBy) ?></th>
-            <th><?= $this->sortableColumnName($layout->queryString, $layout->orderBy, 'Author', 'author_name', $layout->defaultOrderBy) ?></th>
+            <th><?= $this->sortableColumnName($layout->queryString, $layout->orderBy, 'total Books', 'books_count', $layout->defaultOrderBy) ?></th>
             <th><?= $this->sortableColumnName($layout->queryString, $layout->orderBy, 'date added', 'created_at', $layout->defaultOrderBy) ?></th>
             <th><?= $this->sortableColumnName($layout->queryString, $layout->orderBy, 'date updated', 'updated_at', $layout->defaultOrderBy) ?></th>
-            <th>genres</th>
+            <th>Description</th>
             <th>action</th>
         </tr>
         <?php foreach ($this->items as $item) : ?>
@@ -40,29 +41,16 @@ $title = 'Books list';
                     <br/>
                     <small class="text-muted"><?= $this->escapeHtml($item->slug) ?></small>
                 </td>
-                <td>
-                    <a href="<?= $this->url('backend/author/edit', ['id' => $item->author->id,]) ?>"
-                       target="_blank"><?= $this->escapeHtml($item->author->name) ?>
-                        (<?= $this->escapeHtml($item->author->id) ?>)</a>
-                </td>
+                <td><?= $item->books->count() ?></td>
                 <td><?= $this->date($item->created_at->timestamp, DateViewHelper::FORMAT_ADMIN_SIMPLE) ?></td>
                 <td><?= $this->date($item->updated_at->timestamp, DateViewHelper::FORMAT_ADMIN_SIMPLE) ?></td>
-                <td>
-                    <?php
-                    $genres = [];
-                    $format = '<a href="%s" target="_blank">%s (%s)</a>';
-                    foreach ($item->genres as $genre) {
-                        $genres[] = sprintf($format, $this->url('backend/genre/edit', ['id' => $genre->id,]), $genre->title, $genre->id);
-                    }
-                    ?>
-                    <?= count($genres) > 0 ? implode(', ', $genres) : '-' ?>
-                </td>
+                <td><?= $item->description ?></td>
                 <td>
                     <?= $this->partial('backend/partial/gridActions', [
                         'actions' => [
                             [
                                 'type' => 'edit',
-                                'href' => $this->url('backend/book/edit', ['id' => $item->id,]),
+                                'href' => $this->url('backend/genre/edit', ['id' => $item->id,]),
                                 'class' => 'btn btn-outline-warning',
                                 'alt' => 'Edit',
                                 'text' => '',
@@ -71,7 +59,7 @@ $title = 'Books list';
                             ],
                             [
                                 'type' => 'delete',
-                                'href' => $this->url('backend/book/delete', ['id' => $item->id,]),
+                                'href' => $this->url('backend/genre/delete', ['id' => $item->id,]),
                                 'class' => 'btn btn-outline-danger',
                                 'alt' => 'Delete',
                                 'text' => '',

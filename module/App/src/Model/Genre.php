@@ -19,10 +19,10 @@ use Laminas\Validator;
 use App\Validator as CustomValidator;
 
 /**
- * Class Author
+ * Class Genre
  * @package App\Model
  */
-final class Author extends Eloquent
+final class Genre extends Eloquent
 {
     use Sluggable;
     use Fulltextable;
@@ -32,7 +32,7 @@ final class Author extends Eloquent
      *
      * @var string
      */
-    protected $table = 'author';
+    protected $table = 'genre';
 
     /**
      * The model's default values for attributes.
@@ -41,8 +41,9 @@ final class Author extends Eloquent
      */
     protected $attributes = [
         'id' => null,
-        'name' => '',
+        'title' => '',
         'slug' => '',
+        'description' => '',
     ];
 
     /**
@@ -50,33 +51,35 @@ final class Author extends Eloquent
      */
     protected $fillable = [
         //'id',
-        'name',
+        'title',
         'slug',
+        'description',
     ];
 
     /**
      * @var string[]
      */
     protected $searchSourceColumns = [
-        'name',
+        'title',
         'slug',
+        'description',
     ];
 
     /**
      * @var string[]
      */
     protected $sluggableOptions = [
-        'sourceField' => 'name',
+        'sourceField' => 'title',
     ];
 
     /**
-     * Book relation 1-to-*
+     * Book relation *-to-*
      *
-     * @return HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function books()
     {
-        return $this->hasMany(Book::class, 'id_author');
+        return $this->belongsToMany(Book::class, 'book_to_genre', 'id_genre', 'id_book');
     }
 
     /**
@@ -91,7 +94,7 @@ final class Author extends Eloquent
         $inputFilter = new InputFilter();
 
         $inputFilter->add([
-            'name' => 'name',
+            'name' => 'title',
             'required' => true,
             'filters' => [
                 ['name' => Filter\StripTags::class],
@@ -128,6 +131,16 @@ final class Author extends Eloquent
                 [
                     'name' => CustomValidator\Slug::class,
                 ],
+            ],
+        ]);
+
+        $inputFilter->add([
+            'name' => 'description',
+            'required' => false,
+            'filters' => [
+                ['name' => Filter\StringTrim::class],
+            ],
+            'validators' => [
             ],
         ]);
 

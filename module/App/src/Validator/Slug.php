@@ -36,7 +36,7 @@ class Slug extends AbstractValidator
 
         $splittedValue = str_split($value);
 
-        if (count(array_diff($splittedValue, array_merge(SlugHelper::DICTIONARIES['ru'], str_split('0123456789')))) > 0) {
+        if (count(array_diff($splittedValue, array_merge(SlugHelper::DICTIONARIES['ru'], str_split('0123456789_-c')))) > 0) {
             $this->error(self::SYMBOL_VIOLATION);
             return false;
         }

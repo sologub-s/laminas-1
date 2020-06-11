@@ -58,6 +58,14 @@ final class Book extends Eloquent
     /**
      * @var string[]
      */
+    protected $searchSourceColumns = [
+        'title',
+        'slug',
+    ];
+
+    /**
+     * @var string[]
+     */
     protected $sluggableOptions = [
         'sourceField' => 'title',
     ];
@@ -70,6 +78,16 @@ final class Book extends Eloquent
     public function author()
     {
         return $this->belongsTo(Author::class, 'id_author');
+    }
+
+    /**
+     * Genre relation *-to-*
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function genres()
+    {
+        return $this->belongsToMany(Genre::class, 'book_to_genre', 'id_book', 'id_genre');
     }
 
     /**
@@ -106,7 +124,7 @@ final class Book extends Eloquent
                         'field' => 'slug',
                         'exclude' => [
                             'field' => 'id',
-                            'value' => (int) $this->id,
+                            'value' => (int)$this->id,
                         ],
                         'adapter' => \App::getDbAdapter(),
                     ],
@@ -136,6 +154,23 @@ final class Book extends Eloquent
                         'adapter' => \App::getDbAdapter(),
                     ],
                 ],
+            ],
+        ]);
+
+        $inputFilter->add([
+            'name' => 'genres',
+            'required' => false,
+            'validators' => [
+                /*
+                [
+                    'name' => Validator\Db\RecordExists::class,
+                    'options' => [
+                        'table' => (new Genre())->getTable(),
+                        'field' => 'id',
+                        'adapter' => \App::getDbAdapter(),
+                    ],
+                ],
+                */
             ],
         ]);
 

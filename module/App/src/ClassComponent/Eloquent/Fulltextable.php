@@ -9,6 +9,7 @@
 namespace App\ClassComponent\Eloquent;
 
 use App\Model\Searcher;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 
 /**
@@ -39,6 +40,10 @@ trait Fulltextable
      */
     protected static function upsertFulltext($model)
     {
+        if (count($model->searchSourceColumns ?? []) === 0) {
+            return;
+        }
+
         $entity_id = $model->getKey();
         if (is_null($entity_id)) {
             return;
@@ -82,14 +87,16 @@ trait Fulltextable
     }
 
     /**
-     * @param static $query
+     * @param static|Builder $query
      * @param string $searchTerm
      * @return mixed
      */
     public function scopeSearchLike($query, string $searchTerm = '')
     {
+        $table = $query instanceof Builder ? $query->getModel()->getTable() : $query->getTable();
+
         if ($searchTerm === '') {
-            return $query->whereIn('id', []);
+            return $query->whereIn($table . '.id', []);
         }
 
         $entity_type = $this->getTable();
@@ -108,7 +115,7 @@ trait Fulltextable
             return $entity['entity_id'];
         }, $searcher->toArray());
 
-        return $query->whereIn('id', $entity_ids);
+        return $query->whereIn($table . '.id', $entity_ids);
 
     }
 

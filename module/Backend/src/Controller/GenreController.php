@@ -9,10 +9,10 @@
 namespace Backend\Controller;
 
 use App\Helper\QueryString as QueryStringHelper;
-use App\Model\Author;
 use App\Model\Book;
+use App\Model\Genre;
 use App\Service\Pagination;
-use Backend\Form\AuthorForm;
+use Backend\Form\GenreForm;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Laminas\View\Model\ViewModel;
@@ -20,10 +20,10 @@ use Laminas\View\Renderer\PhpRenderer;
 use Laminas\View\View;
 
 /**
- * Class AuthorController
+ * Class GenreController
  * @package Backend\Controller
  */
-class AuthorController extends BaseBackendController
+class GenreController extends BaseBackendController
 {
     const ORDER_DEFAULT = 'updated_at_desc';
 
@@ -46,7 +46,7 @@ class AuthorController extends BaseBackendController
         $skip = ($page - 1) * self::PAGINATION_GRID_PERPAGE;
         $filtersValues = $this->getRequest()->getQuery('filtersValues');
 
-        $itemsQuery = (new Author)
+        $itemsQuery = (new Genre())
             //->where('active', 1)
             ->with(['books',]);
 
@@ -71,10 +71,10 @@ class AuthorController extends BaseBackendController
             ]),
             'searchFormHtml' => $this->renderPartial('backend/partial/searchForm', [
                 'searchTerm' => $this->getRequest()->getQuery('searchTerm'),
-                'searchFormAction' => $this->url()->fromRoute('backend/author/list'),
+                'searchFormAction' => $this->url()->fromRoute('backend/genre/list'),
             ]),
             'filtersFormHtml' => count($this->filtersList ?? []) === 0 ? '' : $this->renderPartial('backend/partial/filtersForm', [
-                'filtersFormAction' => $this->url()->fromRoute('backend/author/list'),
+                'filtersFormAction' => $this->url()->fromRoute('backend/genre/list'),
                 'filtersFormResetHref' => QueryStringHelper::queryStringParams($this->layout()->getVariable('queryString'), ['filtersValues',]),
                 'filtersList' => $this->filtersList ?? [],
                 'filtersValues' => $filtersValues,
@@ -88,7 +88,7 @@ class AuthorController extends BaseBackendController
         $request = $this->getRequest();
 
         // create form
-        $form = new AuthorForm();
+        $form = new GenreForm();
         $form->init();
 
         $id = $this->params()->fromRoute('id');
@@ -100,13 +100,13 @@ class AuthorController extends BaseBackendController
         ];
 
         // if !$id then create new object else load object from db
-        $author = Author::find($id) ?? new Author;
+        $genre = Genre::find($id) ?? new Genre;
 
         // set correct input filter to form
-        $form->setInputFilter($author->getInputFilter());
+        $form->setInputFilter($genre->getInputFilter());
 
         // set data to form
-        $form->setData($author->getArrayCopy());
+        $form->setData($genre->getArrayCopy());
 
         // if request is not POST
         if (!$request->isPost()) {
@@ -123,10 +123,10 @@ class AuthorController extends BaseBackendController
         }
 
         // save object
-        $author->fill($form->getData());
+        $genre->fill($form->getData());
 
         try {
-            if (!$author->save()) {
+            if (!$genre->save()) {
                 $message = 'Cannot save entity';
                 $viewModel['errorMessage'] = $message;
                 return $viewModel;
@@ -138,7 +138,7 @@ class AuthorController extends BaseBackendController
         }
 
         return $this->redirect()->toRoute(
-            is_null($this->params()->fromPost('submit_and_new')) ? 'backend/author/list' : 'backend/author/add',
+            is_null($this->params()->fromPost('submit_and_new')) ? 'backend/genre/list' : 'backend/genre/add',
         );
     }
 
@@ -146,10 +146,10 @@ class AuthorController extends BaseBackendController
     {
         $id = $this->params()->fromRoute('id');
 
-        Author::destroy($id);
+        Genre::destroy($id);
 
         return $this->redirect()->toRoute(
-            'backend/author/list'
+            'backend/genre/list'
         );
     }
 
@@ -168,10 +168,10 @@ class AuthorController extends BaseBackendController
 
         'name' => [
             'type' => 'text',
-            'name' => 'name',
-            'column' => 'name',
-            'label' => 'Name',
-            'placeholder' => 'type Name...',
+            'name' => 'title',
+            'column' => 'title',
+            'label' => 'Title',
+            'placeholder' => 'type Title...',
         ],
 
         'total_books' => [
@@ -191,6 +191,8 @@ class AuthorController extends BaseBackendController
      */
     protected function applyFilters(Builder $queryModel, array $filtersValues = null): Builder
     {
+        return parent::applyFilters($queryModel, $filtersValues);
+
         $filtersValues = $filtersValues ?? $this->getRequest()->getQuery('filtersValues');
 
         if (is_null($filtersValues) || count($filtersValues) === 0) {

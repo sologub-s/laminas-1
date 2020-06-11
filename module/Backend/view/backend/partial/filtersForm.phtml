@@ -1,0 +1,93 @@
+<?php
+
+use App\Helper\QueryString as QueryStringHelper;
+
+/**
+ * @var $layout \Laminas\View\Model\ViewModel
+ */
+
+$layout = $this->layout();
+
+?>
+
+<button class="btn btn-outline-secondary float-right mx-1" type="button" data-toggle="collapse"
+        data-target="#filterCollapse" aria-expanded="false" aria-controls="filterCollapse">
+    Filters
+</button>
+
+<div class="collapse mb-3 card <?= count(array_filter($this->filtersValues ?? [], function ($v) { return $v !== ''; })) > 0  ? 'show' : ''?>" id="filterCollapse">
+    <div class="card-body">
+        <form action="<?= $this->filtersFormAction ?>">
+            <div class="form-row align-items-center">
+
+                <?php foreach ($this->filtersList as $filterCode => $filterItem): ?>
+
+                    <div class="col-auto my-1">
+
+                        <?php if ($filterItem['type'] === 'number'): ?>
+                            <label class="sr-only"
+                                   for="filter_<?= $filterItem['name'] ?>"><?= $filterItem['label'] ?></label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text"><?= $filterItem['label'] ?></div>
+                                </div>
+                                <input type="number" class="form-control"
+                                       name="filtersValues[<?= $filterItem['name'] ?>]"
+                                       value="<?= $this->filtersValues[$filterItem['name']] ?? '' ?>"
+                                       id="filter_<?= $filterItem['name'] ?>"
+                                       placeholder="<?= $filterItem['placeholder'] ?>">
+                            </div>
+                        <?php endif; ?>
+
+                        <?php if ($filterItem['type'] === 'text'): ?>
+                            <label class="sr-only"
+                                   for="filter_<?= $filterItem['name'] ?>"><?= $filterItem['label'] ?></label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text"><?= $filterItem['label'] ?></div>
+                                </div>
+                                <input type="text" class="form-control"
+                                       name="filtersValues[<?= $filterItem['name'] ?>]"
+                                       value="<?= $this->filtersValues[$filterItem['name']] ?? '' ?>"
+                                       id="filter_<?= $filterItem['name'] ?>"
+                                       placeholder="<?= $filterItem['placeholder'] ?>">
+                            </div>
+                        <?php endif; ?>
+
+                        <?php if ($filterItem['type'] === 'number_range'): ?>
+                            <label class="sr-only"
+                                   for="filter_<?= $filterItem['name'] ?>_to"><?= $filterItem['label'] ?></label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text"><?= $filterItem['label'] ?>, from</div>
+                                </div>
+                                <input type="number" class="form-control"
+                                       name="filtersValues[<?= $filterItem['name'] ?>_from]"
+                                       value="<?= $this->filtersValues[$filterItem['name'].'_from'] ?? '' ?>"
+                                       id="filter_<?= $filterItem['name'] ?>_from" placeholder="from..">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">to</div>
+                                </div>
+                                <input type="number" class="form-control"
+                                       name="filtersValues[<?= $filterItem['name'] ?>_to]"
+                                       value="<?= $this->filtersValues[$filterItem['name'].'_to'] ?? '' ?>"
+                                       id="filter_<?= $filterItem['name'] ?>_to" placeholder="to...">
+                            </div>
+                        <?php endif; ?>
+
+                    </div>
+
+                <?php endforeach; ?>
+
+                <div class="col-auto my-1">
+                    <button type="submit" class="btn btn-primary">Apply filters</button>
+                    <a role="button" class="btn btn-secondary" href="<?= QueryStringHelper::queryStringParams($this->queryString, ['filtersValues',]) ?>">Reset filters</a>
+                </div>
+
+            </div>
+
+            <?= $this->getToHidden(QueryStringHelper::queryStringParams('?'.$layout->parametricalString, ['filtersValues',])) ?>
+
+        </form>
+    </div>
+</div>
